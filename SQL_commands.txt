@@ -1,0 +1,28 @@
+pip3 install mysql-connector-python
+
+brew install mysql
+brew services start mysql
+mysqladmin -u root password 'password1'
+
+
+mysqladmin -u root -p create tweetsDB
+
+mysql -u root -p
+
+From here on in mysql
+-> mysql
+
+show databases
+use tweetsDB
+
+
+CREATE TABLE tweets(
+user VARCHAR(300),
+date TIMESTAMP ,
+text  VARCHAR(300),
+favorite_count INT,
+
+INDEX user (user),
+INDEX date (date),
+INDEX favorite_count (favorite_count)
+);
