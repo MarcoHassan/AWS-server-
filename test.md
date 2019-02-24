@@ -105,5 +105,30 @@ INDEX favorite_count (favorite_count)
 ## Actual Python skript
 https://stackabuse.com/accessing-the-twitter-api-with-python/
 
+
+### Running the python script in the background
+
+Nohup let't it run in the background and makes the process not dependent on the shell that initiated it.
+Furthermore, nohup redirects the two channels STDOUT and STDERR to the nohup.out file or a specified file - in this case log_twython.log. The flag -u for python unbufferes binary stdout and stderr and is used to fix some issues. "&" simply lets the process run in the background.
+
+
+Since the process appends its log to the log file on an ongoing bases this can be used to check the status. tail -F follows the last lines of a file and is perfect in this case.
+tail -F log_twython.log
+
+
+nohup python -u twystream.py > log_twython.log &
+
+Tools to manage Background processes
+
+top -fu ec2-user
+Shows porcesses associated with a specific user.
+
+jobs
+
+ps
+
+
+
+
 ....
 
