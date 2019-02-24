@@ -1,4 +1,6 @@
 # AWS-server-
 Set up an AWS server and download twitter twitts periodically
 
-## Work in progress...
+**Authors: Marco Hassan, Alexander Steeb**
+
+**Work in progress..**
