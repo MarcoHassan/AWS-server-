@@ -24,16 +24,17 @@ import pytz  # $ pip install pytz
 
 # File paths
 path_credentials = "../twitter_credentials.json"
-path_data = "../data/" + sys.argv[1] + ".csv"
-path_log = "../log/" + sys.argv[2] + ".log"
+# if file does not exist will not create it; useless to work with sys.argv
+path_data = "../data/tweets.csv"
+path_log = "../log/twitter.log"
 
 # Setup logger
 logger = logging.getLogger('twitter')
 hdlr = logging.FileHandler(path_log)
-formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+formatter = logging.Formatter('%(asctime)s (%(levelname)s) - %(message)s')
 hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.INFO)  # to get information from info and above
 
 # Keywords to track
 keywords = sys.argv[1]
@@ -47,8 +48,9 @@ keywords = sys.argv[1]
 with open(path_credentials, "r") as file:
     creds = json.load(file)
 
-
 # Create a class that inherits TwythonStreamer
+
+
 class MyStreamer(TwythonStreamer):
 
     # Create counter variable & date variable
@@ -62,7 +64,8 @@ class MyStreamer(TwythonStreamer):
             user='root')
         if conn.is_connected():
             print('Connected to MySQL database')
-            my_str = "Stream successfully established for Keywords: {}".format(keywords)
+            my_str = "Stream successfully established for Keywords: {}".format(
+                keywords)
             logger.info(my_str)
     except mysql.connector.Error as e:
         print(e)
@@ -82,20 +85,24 @@ class MyStreamer(TwythonStreamer):
     # Insert each Tweet into MySql
     def save_to_sql(self, tweet):
         try:
-            self.conn.cursor().execute("""INSERT into tweets(date,user,text) values(%s,%s,%s)""", (list(tweet.values())))
+            self.conn.cursor().execute(
+                """INSERT into tweets(date,user,text) values(%s,%s,%s)""", (list(tweet.values())))
             self.conn.commit()
             print('Inserted {} tweets'.format(self.counter))
         except Exception as e:
             print(e)
+            # gives the text lost in the log file
+            logging.error('Insertion failed:' + str(list(tweet.values())[2]))
             self.conn.rollback()
-            print('Insertion failed')
 
     # Filter out unwanted data
-    def process_tweet(self,tweet):
+
+    def process_tweet(self, tweet):
         d = {}
 
         timestamp = mktime_tz(parsedate_tz(tweet['created_at']))
-        dt = datetime.datetime.fromtimestamp(timestamp, pytz.timezone('US/Eastern'))
+        dt = datetime.datetime.fromtimestamp(
+            timestamp, pytz.timezone('US/Eastern'))
         d['date'] = dt.strftime('%Y-%m-%d %H:%M:%S')
 
         d['user'] = tweet['user']['screen_name'].encode('utf-8')
@@ -122,26 +129,28 @@ class MyStreamer(TwythonStreamer):
         logger.info(my_str)
         self.counter += 1
 
+
 # Instantiate streaming class
 stream = MyStreamer(creds['CONSUMER_KEY'], creds['CONSUMER_SECRET'],
                     creds['ACCESS_TOKEN'], creds['ACCESS_SECRET'])
 
 
-# Wrapper function for MyStremer which restarts if error occurs
+# Wrapper function for MyStremer which restarts if error occurs and specifies the research criteria.
 def cont_streamer():
     try:
         stream.statuses.filter(track=keywords, language='en')
     except Exception as e:
         print(e)
-        print('Failed; wait 30 seconds')
-        time.sleep(30)
+        print('Failed; wait 5 seconds')
+        time.sleep(5)
         print('Try again')
         cont_streamer()
 
 
 ######################################
-####	MAIN						 
+# MAIN
 ######################################
+
 
 def main():
     cont_streamer()
