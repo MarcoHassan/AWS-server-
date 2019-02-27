@@ -13,7 +13,7 @@ twitter = Twython(creds['CONSUMER_KEY'], creds['CONSUMER_SECRET'])
 # Create our query
 query = {'q': 'tradewar',
          'result_type': 'recent',  # both popular and most recent results
-         'count': 100,
+         'count': 150,
          'lang': 'en',  # restrict results to english language tweets
          }
 
