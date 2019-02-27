@@ -3,15 +3,18 @@
 mysql.server start
 mysql.server stop
 
+
 mysql -uroot
 
+# Creat Database
 mysqladmin -uroot create tweetsDB
 
 #### in mysql ###
 
+# Use the DB
 use tweetsDB
 
-
+# Creat table
 CREATE TABLE tweets(
 
 date TIMESTAMP,
@@ -21,3 +24,14 @@ text  VARCHAR(300),
 INDEX user (user),
 INDEX date (date)
 );
+
+# Delet all rows of a table
+TRUNCATE TABLE tweets
+
+# See tweets by minute/ hour
+SELECT
+  EXTRACT(HOUR from date) AS hour,
+  EXTRACT(MINUTE from date) AS minute,
+  COUNT(date) AS count
+FROM tweets
+GROUP BY hour, minute;
