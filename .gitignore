@@ -1,2 +1,5 @@
 *.json
+.idea
 *.DS_store
+data
+log
