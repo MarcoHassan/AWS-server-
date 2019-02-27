@@ -1,0 +1,23 @@
+# Start server after installing it
+
+mysql.server start
+mysql.server stop
+
+mysql -uroot
+
+mysqladmin -uroot create tweetsDB
+
+#### in mysql ###
+
+use tweetsDB
+
+
+CREATE TABLE tweets(
+
+date TIMESTAMP,
+user VARCHAR(300),
+text  VARCHAR(300),
+
+INDEX user (user),
+INDEX date (date)
+);
