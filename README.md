@@ -178,7 +178,7 @@ In our case, we decided to run an automatic backup of the mySQL database every 2
 # Cron #
 ########
 
-MAILTO= <mail> # Enter a mail on, which to return the cron executions.
+MAILTO= <mail> # Enter a mail on, which to be informed about the cron executions.
 
 01 0 1 * * echo "Cron in running at: $(date)" >> /home/ec2-user/cron.log && /usr/bin/mysqldump -u root -p'ENTER YOUR PASSWORD' tweetsDB > /home/ec2-user/backup.sql && echo "Cron is running smoothly and saved a backup of the tweewtsDB database at: $(date)" >> /home/ec2-user/cron.log || echo "At $(date) back-up did not complete asan error occured." >> /home/ec2-user/cron.log
 ```
