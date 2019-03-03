@@ -8,11 +8,13 @@ The aim was to set up a **server**, set up a **mySQL database**, importing some 
 
 For the project we decided to follow the following approach:
 
+________________________
 **Server:** AWS ec2 sever.
 
 **Data Collection:** Tweets collection and leveraging the Twitter APIs and automatically importing the tweets in the mySQL database.
 
 **Cron job:** Daily back up the database.
+_________________________
 
 
 ## Inrtroduction
