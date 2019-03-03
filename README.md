@@ -4,7 +4,7 @@
 
 This repository contains one of the three semester homeworks for the Master's class *Advanced Data Analysis and Numerical Methods* at the University of St. Gallen.
 
-The aim was to set up a **server**, set up a **mySQL database**, importing some data leveraging the **API** of some company and finally to run a **cron job**  periodically on the server to automate some process.
+The aim was to set up a **server**, set up a **mySQL database**, import some data leveraging an **API** and finally to run a **cron job**  periodically on the server to automate some process.
 
 For the project we decided to follow the following approach:
 
