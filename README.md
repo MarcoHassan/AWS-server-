@@ -130,6 +130,8 @@ pip mysql.connector
 
 Please find the python code for the project in the above src directory in the twystream.py file. We tried to describe the code in the most exhaustive possible way.
 
+Do not hesitate to contact us in case of doubts.
+
 
 #### Instruction for the script execution
 
