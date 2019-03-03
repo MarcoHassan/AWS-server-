@@ -216,4 +216,4 @@ Given the structure of the mysqldump command that will save all of the syntax of
 mysql -u <user> -p < <path>/backup.sql
 ```
 
-Should you be interested in compressing the backup or saving|restoring multiple databases at once, we refer you to this  [mysqldump Tutorial](http://webcheatsheet.com/sql/mysql_backup_restore.php)
+Should you be interested in compressing the backup or saving|restoring multiple databases at once, we refer you to this  [mysqldump Tutorial](http://webcheatsheet.com/sql/mysql_backup_restore.php).
