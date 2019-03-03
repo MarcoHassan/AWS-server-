@@ -6,7 +6,7 @@ SHELL=/bin/bash
 # MAILTO=marco.hassan30@gmail.com # Enter a mail on, which to return the cron executions
 
 
-## Execute the pyhton script to connect to mysql and run a backup each first of the month at 00:01.
+## Execute the pyhton script to connect to mysql and run a backup each day at 00:01.
 
 ##########
 # Format #
