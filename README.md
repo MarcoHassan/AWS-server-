@@ -172,7 +172,13 @@ After the following step it will be possible to specify the desired time and job
 In our case, we decided to run an automatic backup of the mySQL database every 24h at 01:01 a.m., running the following command
 
 ```
-01 0 1 * * echo "Cron in running at: $(date)" >> /home/ec2-user/prova.log && /usr/bin/mysqldump -u root -p'ENTER YOUR PASSWORD' tweetsDB > /home/ec2-user/backup.sql && echo "Cron is running smoothly and saved a backup of the tweewtsDB database at: $(date)" >> /home/ec2-user/prova.log || echo "At $(date) back-up did not complete asan error occured." >> /home/ec2-user/prova.log
+########
+# Cron #
+########
+
+MAILTO= <mail> # Enter a mail on, which to return the cron executions.
+
+01 0 1 * * echo "Cron in running at: $(date)" >> /home/ec2-user/prova.log && /usr/bin/mysqldump -u root -p'ENTER YOUR PASSWORD' tweetsDB > /home/ec2-user/backup.sql && echo "Cron is running smoothly and saved a backup of the tweewtsDB database at: $(date)" >> /home/ec2-user/cron.log || echo "At $(date) back-up did not complete asan error occured." >> /home/ec2-user/cron.log
 ```
 
 #### Breaking the code up
@@ -201,12 +207,12 @@ echo "Cron in running at: $(date)" >> /home/ec2-user/prova.log
 
 (iv) If successful (*the &&*) inform the user in the log file that the backup of the server was performed
 ```
-&& echo "Cron is running smoothly and saved a backup of the tweewtsDB database at: $(date)" >> /home/ec2-user/prova.log
+&& echo "Cron is running smoothly and saved a backup of the tweewtsDB database at: $(date)" >> /home/ec2-user/cron.log
 ```
 
 (v) Else, when unsuccessful (*the ||*) infrom the  user in the log file that the backup failed.
 ```
-|| echo "At $(date) back-up did not complete asan error occured." >> /home/ec2-user/prova.log
+|| echo "At $(date) back-up did not complete asan error occured." >> /home/ec2-user/cron.log
 ```
 
 #### Restore the database through the backup file
