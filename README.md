@@ -77,41 +77,46 @@ _________________________________________________
 **Source 2:** **ASK ALEX**
 ________________________________________________
 
+#### General Information
+
+The python script we are going to present relies on the existence of two files and one database to run smoothly.
+
+In this sense before running the script it is necessary to make sure ot have:
+
+(i) A csv file where the imported tweeets will be saved under the correct path location ../data/tweets.csv
+ 
+(ii) A log file where the user can find documentation on the smoothly operation of the script; this should be saved under ../log/twitter.log
+
+(iii) A fully specified mySQL database specified as in 2. above.
+
+**Notice moreover that the naming conventions of the files should meet the one in the script. Should that not be the case it will be necessary to manually adjust the script.**
+
+**The default language of the tweets is english and can be altered at line 178; moreover we invite you to control and update the mySQL connectivity entries at line 103.**
 
 
-# This python script heavily relies on the twython package. The idea is
-# the one of downloading Twitter tweets in a given language relating to
-# a topic to be specified by the user when running the script.
+#### Libraries
 
-# This python script leverages the twython package to interact
-# with the Twitter servers through their APIs. For the successfull
-# execution of this script it is therefore necessary to dispose of an
-# appropriate set of API keys in order to connect with the Twitter server.
-# The API keys can be obtained online following twitter instructions and
-# MUST be saved in a json file called twitter_json
+The script relies on the following packages that should be downloaded -either on the virtual environment as in our case, or in the appropriate directory using the pip/pip3 package manager.
 
-# Once the above step is done it is necessary to create a log file where
-# - to track the script execution - and a csv file - where the downloaded
-# tweets will be saved -. Moreover it will be necessary to set up a
-# mysql server.
+Would you wish to follow our approach we invite you to follow the following steps:
 
-# Notice that the naming of the csv, log and database should match the one
-# used in this script. An adjustment below will be necessary if different
-# naming will be used. In addition if you search tweets in a different
-# language than english you should specify the condition at line 178.
+1. Actiavte and switch to your local environment
+```
+source /home/shared/venv/python36/bin/activate 
+```
+
+2. Dowload the needed packages
+```
+pip install json
+pip install twython
+
+etc.
+
+```
+
+#### Outcome
+
+After properly setting up the script it will be possible to 
 
 
-Local installation of mysql
-
-pip3 install mysql-connector-python
-
-brew install mysql
-
-brew services start mysql
-
-mysqladmin -u root password 1234
-
-mysqladmin -u root -p create tweetsDB
-
-mysql -u root -p
-
+## 4. Crontab Set Up
