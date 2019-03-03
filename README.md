@@ -186,7 +186,7 @@ In our case, we decided to run an automatic backup of the mySQL database every 2
 #  |   |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
 #  |   |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
 #  |   |  |  |  |
-# 01  01  *  *  *  echo ..
+# 01  01  *  *  * 
 ```
 
 (ii) Inform the user that the cron job start running and specify the hour.
