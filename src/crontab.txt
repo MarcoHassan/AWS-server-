@@ -30,7 +30,7 @@ SHELL=/bin/bash
 
 Run a backup of the mysql files
 
-01 0 1 * * echo "Cron in running at: $(date)" >> /home/ec2-user/prova.log && /usr/bin/mysqldump -u root -p'1234' tweetsDB > /home/ec2-user/backup.sql && echo "Cron is running smoothly and saved a backup of the tweewtsDB database at: $(date)" >> /home/ec2-user/prova.log || echo "At $(date) back-up did not complete asan error occured." >> /home/ec2-user/prova.log
+01 0 1 * * echo "Cron in running at: $(date)" >> /home/ec2-user/prova.log && /usr/bin/mysqldump -u root -p'ENTER YOUR PASSWORD' tweetsDB > /home/ec2-user/backup.sql && echo "Cron is running smoothly and saved a backup of the tweewtsDB database at: $(date)" >> /home/ec2-user/prova.log || echo "At $(date) back-up did not complete asan error occured." >> /home/ec2-user/prova.log
 
 ##################
 
