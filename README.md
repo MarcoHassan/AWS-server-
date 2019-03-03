@@ -11,7 +11,7 @@ Set up an AWS server and download twitter tweets periodically
 
 **TO BE ADDED...**
 
-## 2. SQL SET UP
+## 2. Database Set Up
 
 Once the server was properly set up we downloaded first the mySQL software on the server running the following command.
 
@@ -63,6 +63,41 @@ INDEX favorite_count (favorite_count)
 Notice the use of **INDEX** in setting up the table. This  will allow a faster query of the data without slowing down the software as the tweets dataset are **static** and imported tweets will not be dynamically adjusted once the tweets are imported.
  
 ## 3. Python Script
+
+In this section we are going to explain the set up of a python scrript that automatically imports  all the tweets in a given lanaguage releting to a specific topic the user can choose when running the script.
+
+Before dwelling on the details notice that our code heavily relies on the twython package available on github and copied in the current repository. 
+
+Moreover pieces of code are referenced from:
+
+**Source 1:** [Accessing Twitter API with Python](https://stackabuse.com/accessing-the-twitter-api-with-python/) 
+
+
+**Source 2:** **ASK ALEX**
+
+
+
+# This python script heavily relies on the twython package. The idea is
+# the one of downloading Twitter tweets in a given language relating to
+# a topic to be specified by the user when running the script.
+
+# This python script leverages the twython package to interact
+# with the Twitter servers through their APIs. For the successfull
+# execution of this script it is therefore necessary to dispose of an
+# appropriate set of API keys in order to connect with the Twitter server.
+# The API keys can be obtained online following twitter instructions and
+# MUST be saved in a json file called twitter_json
+
+# Once the above step is done it is necessary to create a log file where
+# - to track the script execution - and a csv file - where the downloaded
+# tweets will be saved -. Moreover it will be necessary to set up a
+# mysql server.
+
+# Notice that the naming of the csv, log and database should match the one
+# used in this script. An adjustment below will be necessary if different
+# naming will be used. In addition if you search tweets in a different
+# language than english you should specify the condition at line 178.
+
 
 Local installation of mysql
 
