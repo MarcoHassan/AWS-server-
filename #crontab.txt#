@@ -1,0 +1,62 @@
+## Cron commands must be written in crontab (cron tables).
+## You can write crontab in the /var/spool/cron directory
+
+## In order to write a crontab. Change directory to the cron directory
+
+      cd /var/spool/cron
+
+## Create a crontab
+
+   	  crontab -e
+
+## Cron deamons
+
+--> these are cron files that stays dormant in /etc/cron.d, where the cron files specified through crontab gets installed.
+
+--> they get awake when the time specified in the crontab gets activated and they run the command then.
+
+## Notice alternative to "mysqladmin -u root -p create tweetsDB" in Alex code is
+
+   CREATE DATABASE tweetsDB; ## to run in mysql
+
+## To see the structure of a table in mysql
+
+      desc <table name>;
+
+## To make sure the connession with the server can run through python without incountering the problem of the sudo permisssion; this was necessary on my computer. Not on the server.:
+
+# Step 1: Create a new user
+
+       CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
+
+
+# Step 2: Grant him priviledge access
+
+       GRANT ALL PRIVILEGES ON database_name.* TO 'newuser'@'localhost';
+
+## mysql-connector-python was not installed in venv:
+
+   pip install mysql-connector-python   			
+
+## Check if crontab running
+
+   sudo /etc/init.d/cron status
+
+## Change configuration to the my.cnf file of sql to grant modification access of table running python scripts
+
+## Step 1: go to my.cnf
+
+   cd /etc/my.cnf
+
+## Step 2: change permission
+
+   # Secure File Priv.
+   secure-file-priv = ""
+
+
+## Run multiple commands into crontab
+
+   * * * * * "$(command -v bash)" -c 'source activate myenv3 && cd ~/foo/bar && python sssb.py'
+
+
+### Command to automatically back up the mySQL database.
