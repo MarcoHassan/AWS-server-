@@ -1,0 +1,46 @@
+##################
+# Crontab Set Up #
+##################
+
+SHELL=/bin/bash
+# MAILTO=marco.hassan30@gmail.com # Enter a mail on, which to return $
+
+
+## Execute the pyhton script to connect to mysql on Tuesdays, each mi$
+
+##########
+# Format #
+##########
+
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tu$
+# |  |  |  |  |
+# *  *  *  *  * user-name  command to be executed
+
+#########
+
+################## 
+# Cron Execution #
+##################
+
+Run a backup of the mysql files
+
+* * * * * echo "Cron in running at: $(date)" >> /home/ec2-user/prova.$
+
+##################
+
+
+##################
+# Python Scripts #
+##################
+
+## You can even run directly python scripts thorugh crontabs and acti$
+
+## * * * * * mysqldump tweetsDB >> /home/ec2-user/prova.log 2>&1 # /h$
+
+##################
