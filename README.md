@@ -109,14 +109,30 @@ source /home/shared/venv/python36/bin/activate
 ```
 pip install json
 pip install twython
-
-etc.
-
+pip mysql.connector
 ```
 
-#### Outcome
+#### Code
 
-After properly setting up the script it will be possible to 
+Please find the python code for the project in the above src directory in the twystream.py file. We tried to describe the code in the most exhaustive possible way.
 
+
+#### Instruction for the script execution
+
+Once you imported the python script, created the supporting files and database and updated the connectivity and naming appropriately you will be able to run the script through the following command:
+
+```
+python/python3 <path>/twystream.py
+```
+
+The script will start running at this point. Notice that the script will run infinitely as when errors occurs the program will simply reactivate after 5 sec. 
+
+You can therefore interrupt the execution of the program with the Keyboard interrupt command. It is moreover advisable to run the program in the background by running the following code
+```
+ASK ALEX
+```
+Moreover due to the set up of a log file of reference in the python script you will be able to follow and check the operations of the program by inspecting the **twitter.log** file generated at the begging.
+
+**Congrats!** You have at this stage a fully functional program automatically downloading and importing the tweets of your specific interest. You can find them both in your database as well as in the csv file.
 
 ## 4. Crontab Set Up
