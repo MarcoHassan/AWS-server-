@@ -89,9 +89,9 @@ In this sense before running the script it is necessary to make sure ot have:
 
 (iii) A fully specified mySQL database specified as in 2. above.
 
-**Notice moreover that the naming conventions of the files should meet the one in the script. Should that not be the case it will be necessary to manually adjust the script.**
+*Note 1:* the naming conventions of the files should meet the one in the script. Should that not be the case it will be necessary to manually adjust the script.
 
-**The default language of the tweets is english and can be altered at line 178; moreover we invite you to control and update the mySQL connectivity entries at line 103.**
+*Note 2:* the default language of the tweets is english and can be altered at line 178; moreover we invite you to control and update the mySQL connectivity entries at line 103.
 
 
 #### Libraries
