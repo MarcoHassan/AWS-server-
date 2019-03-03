@@ -1,7 +1,19 @@
-# AWS-server-
-Set up an AWS server and download twitter tweets periodically
+# AWS-server
 
 **Authors: Marco Hassan, Alexander Steeb**
+
+This repository contains one of the three semester homeworks for the Master's class *Advanced Data Analysis and Numerical Methods* at the University of St. Gallen.
+
+The aim was to set up a **server**, set up a **mySQL database**, importing some data leveraging the **API** of some company and finally to run a **cron job**  periodically on the server to automate some process.
+
+For the project we decided to follow the following approach:
+
+**Server:** AWS ec2 sever.
+
+**Data Collection:** Tweets collection and leveraging the Twitter APIs and automatically importing the tweets in the mySQL database.
+
+**Cron job:** Daily back up the database.
+
 
 ## Inrtroduction
 
