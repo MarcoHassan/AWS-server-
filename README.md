@@ -69,11 +69,13 @@ In this section we are going to explain the set up of a python scrript that auto
 Before dwelling on the details notice that our code heavily relies on the twython package available on github and copied in the current repository. 
 
 Moreover pieces of code are referenced from:
+_________________________________________________
 
 **Source 1:** [Accessing Twitter API with Python](https://stackabuse.com/accessing-the-twitter-api-with-python/) 
 
 
 **Source 2:** **ASK ALEX**
+________________________________________________
 
 
 
