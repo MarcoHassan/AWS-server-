@@ -150,3 +150,64 @@ Moreover due to the set up of a log file of reference in the python script you w
 **Congrats!** You have at this stage a fully functional program automatically downloading and importing the tweets of your specific interest. You can find them both in your database as well as in the csv file.
 
 ## 4. Crontab Set Up
+
+In this last part we are going to descrbe the cron job set up in order to run a backup of the precious database periodically.
+
+As a first step it is important to operate through the root user to set up the cron job or to give sudo permission to the user of choice.
+
+Given the well being of the permissions, it is necessary to specify the cron job in the correct repository.
+
+For the project we decided to implement the job in the generally valid */var/spool/cron* repository. An alternative approach would consists in saving the different cron jobs under the minute/hourly/etc. repositories.
+
+```
+# go to the directory where you aim to specify the cron job
+cd /var/spool/cron
+
+# to create a crontab in the repository where to specify the cron job to be executed
+crontab -e cron linux repository
+```
+
+After the following step it will be possible to specify the desired time and job to be executed with your favourite editor.
+
+In our case, we decided to run an automatic backup of the mySQL database every 24h at 01:01 a.m., running the following command
+
+```
+01 0 1 * * echo "Cron in running at: $(date)" >> /home/ec2-user/prova.log && /usr/bin/mysqldump -u root -p'ENTER YOUR PASSWORD' tweetsDB > /home/ec2-user/backup.sql && echo "Cron is running smoothly and saved a backup of the tweewtsDB database at: $(date)" >> /home/ec2-user/prova.log || echo "At $(date) back-up did not complete asan error occured." >> /home/ec2-user/prova.log
+```
+
+#### Breaking the code up
+
+(i) Time selection
+```
+# Example of job definition:
+#  .---------------- minute (0 - 59)
+#  |   .------------- hour (0 - 23)
+#  |   |  .---------- day of month (1 - 31)
+#  |   |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+#  |   |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+#  |   |  |  |  |
+# 01  01  *  *  *  echo ..
+```
+
+(ii) Inform the user that the cron job start running and specify the hour.
+```
+echo "Cron in running at: $(date)" >> /home/ec2-user/prova.log
+```
+
+(iii) Run the backup 
+```
+&& /usr/bin/mysqldump -u root -p'ENTER YOUR PASSWORD' tweetsDB > /home/ec2-user/backup.sql
+```
+
+(iv) If successful (*the &&*) inform the user in the log file that the backup of the server was performed
+```
+&& echo "Cron is running smoothly and saved a backup of the tweewtsDB database at: $(date)" >> /home/ec2-user/prova.log
+```
+
+(v) Else, when unsuccessful (*the ||*) infrom the  user in the log file that the backup failed.
+```
+|| echo "At $(date) back-up did not complete asan error occured." >> /home/ec2-user/prova.log
+```
+
+#### Restore the database through the backup file
+
