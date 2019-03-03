@@ -74,7 +74,7 @@ INDEX favorite_count (favorite_count)
 );
 ```
  
-Notice the use of **INDEX** in setting up the table. This  will allow a faster query of the data without slowing down the software as the tweets dataset are **static** and imported tweets will not be dynamically adjusted once the tweets are imported.
+Notice the use of **INDEX** in setting up the table. This  will allow a faster query of the data without slowing down the software as the tweets dataset are **static** and imported tweets will not be dynamically adjusted in a second moment.
  
 ## 3. Python Script
 
