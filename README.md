@@ -225,3 +225,18 @@ mysql -u <user> -p < <path>/backup.sql
 ```
 
 Should you be interested in compressing the backup or saving|restoring multiple databases at once, we refer you to this  [mysqldump Tutorial](http://webcheatsheet.com/sql/mysql_backup_restore.php).
+
+## 5. Connect to the Server and Plot
+
+Having the server fully running in the back it is possible now to set up python scripts connecting to the server, extracting data from it and performing the analysis of interest.
+
+As an example we decided to set up briefly a python script connecting to the tweetsDB database, extracting the number of collected tweets by time frame. 
+
+You can find the script in the repository above in the tweet_plot.py file.
+
+The collected tweets can then be quickly inspecting selecting the time frame of interest as done below and can be potentially be indicative for the occurence of major events.
+
+
+
+
+
