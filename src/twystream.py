@@ -36,6 +36,11 @@ import sys  # for entering the keyword of interest for the search
 # to set up a log file where the operations of the script are tracked.
 import logging
 
+# To plot
+# to import SQL queries to panda data frame
+import pandas as pd
+import matplotlib.pyplot as plt
+
 # SQL
 import mysql.connector  # to connect with the SQL server
 
@@ -103,7 +108,8 @@ class MyStreamer(TwythonStreamer):
         conn = mysql.connector.connect(
             host='localhost',
             database='tweetsDB',
-            user='root')
+            user='root',
+            password='ENTER YOUR PASSWORD')
         if conn.is_connected():
             # report successfull connection in the log file.
             logger.info('Connected to MySQL database')
@@ -198,6 +204,7 @@ stream = MyStreamer(creds['CONSUMER_KEY'], creds['CONSUMER_SECRET'],
 # Calls the twythonstreamer filter member function that will
 # call the mystreamer on_success and on_error member function of the
 # Mystreamer function and execute the code.
+
 # Moreover the function below will reactivate the tweets downloaded after
 # 5 sec. after an error occured.
 
