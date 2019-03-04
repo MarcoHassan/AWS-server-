@@ -4,7 +4,7 @@
 
 This repository contains one of the three semester homeworks for the Master's class *Advanced Data Analysis and Numerical Methods* at the University of St. Gallen.
 
-The aim was to set up a **server**, set up a **mySQL database**, import some data leveraging an **API** and finally to run a **cron job**  periodically on the server to automate some process.
+The aim was to set up a ```server```, set up a ```mySQL database```, import some data leveraging an ```API``` and finally to run a ```cron job```  periodically on the server to automate some process.
 
 For the project we decided to follow the following approach:
 
@@ -76,7 +76,7 @@ INDEX favorite_count (favorite_count)
  
 Notice the use of **INDEX** in setting up the table. This  will allow a faster query of the data without slowing down the software as the tweets dataset are **static** and imported tweets will not be dynamically adjusted in a second moment.
  
-## 3. Python Script
+## 3. Twitter API Connection, Data Collection, and Database Update
 
 In this section we are going to explain the set up of a python scrript that automatically imports  all the tweets in a given lanaguage releting to a specific topic the user can choose when running the script.
 
@@ -225,3 +225,22 @@ mysql -u <user> -p < <path>/backup.sql
 ```
 
 Should you be interested in compressing the backup or saving|restoring multiple databases at once, we refer you to this  [mysqldump Tutorial](http://webcheatsheet.com/sql/mysql_backup_restore.php).
+
+## 5. Connect to the Database and Plot
+
+Having the server fully running in the back it is possible now to set up python scripts connecting to the server, extracting data and performing the analysis of interest.
+
+As an example we decided to set up briefly a python script connecting to the tweetsDB database, extracting the number of collected tweets by time frame. 
+
+You can find the script in the repository above in the tweet_plot.py file available under the src repository.
+
+If you use virtual environments to keep your working environment clean, recall to active the virtual environment first.
+
+The collected tweets can then be quickly inspected selecting the time frame of interest as done in our script, where we decided to plot the number of collected tweets per day, plot them, and save the corresponding graph in the home directory of ec2-user of the server.
+
+The result will be as in the image below and can be potentially used to visually inspect for the occurence of major events related to the keyword of interest.
+
+![immagine](https://user-images.githubusercontent.com/42472072/53753139-d29a3b00-3eb0-11e9-9410-6bb412c74c60.png)
+
+
+
