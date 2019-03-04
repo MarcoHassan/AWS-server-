@@ -1,2 +1,2 @@
 #!/usr/bin/env python
-python twystream.py 'Kim Trump' Summit
+python twystream.py 'Kim Trump' 
