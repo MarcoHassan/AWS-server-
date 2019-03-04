@@ -36,6 +36,11 @@ import sys  # for entering the keyword of interest for the search
 # to set up a log file where the operations of the script are tracked.
 import logging
 
+# To plot
+# to import SQL queries to panda data frame
+import pandas as pd
+import matplotlib.pyplot as plt
+
 # SQL
 import mysql.connector  # to connect with the SQL server
 
@@ -103,7 +108,8 @@ class MyStreamer(TwythonStreamer):
         conn = mysql.connector.connect(
             host='localhost',
             database='tweetsDB',
-            user='root')
+            user='marco',
+            password='Bianca&&007')
         if conn.is_connected():
             # report successfull connection in the log file.
             logger.info('Connected to MySQL database')
@@ -198,6 +204,7 @@ stream = MyStreamer(creds['CONSUMER_KEY'], creds['CONSUMER_SECRET'],
 # Calls the twythonstreamer filter member function that will
 # call the mystreamer on_success and on_error member function of the
 # Mystreamer function and execute the code.
+
 # Moreover the function below will reactivate the tweets downloaded after
 # 5 sec. after an error occured.
 
@@ -217,3 +224,46 @@ def cont_streamer():
 #############
 
 cont_streamer()
+
+
+##########################
+# Plot tweets per second #
+##########################
+
+def tweetPlot():
+
+    conn = mysql.connector.connect(
+        host='localhost',
+        database='tweetsDB',
+        user='marco',
+        password='Bianca&&007')
+
+    cur = conn.cursor()
+
+    cur.execute(
+        """SELECT
+        EXTRACT(HOUR from date) AS hour,
+        EXTRACT(MINUTE from date) AS minute,
+        EXTRACT(DAY from date) as day,
+        count(date) as count
+        FROM tweets
+        GROUP BY day, hour, minute;
+        """
+    )
+
+    # Put it all to a data frame
+
+    sql_data = pd.DataFrame(cur.fetchall())
+    sql_data.columns = cur.column_names
+
+    # Close the session
+    conn.close()
+
+    return sql_data
+
+
+data = tweetPlot()
+
+data.plot(kind='line', x='minute', y='count')
+plt.title('Tweeets per Day')
+plt.show()
