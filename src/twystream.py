@@ -108,8 +108,8 @@ class MyStreamer(TwythonStreamer):
         conn = mysql.connector.connect(
             host='localhost',
             database='tweetsDB',
-            user='marco',
-            password='Bianca&&007')
+            user='root',
+            password='ENTER YOUR PASSWORD')
         if conn.is_connected():
             # report successfull connection in the log file.
             logger.info('Connected to MySQL database')
