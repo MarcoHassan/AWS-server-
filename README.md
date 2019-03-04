@@ -232,9 +232,11 @@ Having the server fully running in the back it is possible now to set up python 
 
 As an example we decided to set up briefly a python script connecting to the tweetsDB database, extracting the number of collected tweets by time frame. 
 
-You can find the script in the repository above in the tweet_plot.py file in the **.
+You can find the script in the repository above in the tweet_plot.py file available under the src repository.
 
-The collected tweets can then be quickly inspecting selecting the time frame of interest as done below and can be potentially be indicative for the occurence of major events.
+The collected tweets can then be quickly inspected selecting the time frame of interest as done in our script, where we decided to plot the number of collected tweets per day, plot them, and saving the graph in the home directory of ec2-user of the server.
+
+The result will be as the image below and can be potentially used as an indication for the occurence of major events related to the keyword of interest.
 
 ![immagine](https://user-images.githubusercontent.com/42472072/53753139-d29a3b00-3eb0-11e9-9410-6bb412c74c60.png)
 
