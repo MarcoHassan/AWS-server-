@@ -226,7 +226,7 @@ mysql -u <user> -p < <path>/backup.sql
 
 Should you be interested in compressing the backup or saving|restoring multiple databases at once, we refer you to this  [mysqldump Tutorial](http://webcheatsheet.com/sql/mysql_backup_restore.php).
 
-## 5. Connect to the Server and Plot
+## 5. Connect to the Database and Plot
 
 Having the server fully running in the back it is possible now to set up python scripts connecting to the server, extracting data from it and performing the analysis of interest.
 
