@@ -33,6 +33,7 @@ from twython import TwythonStreamer
 import json  # to interact with the json file where the API keys are saved
 import csv  # to write a csv containing the tweets
 import sys  # for entering the keyword of interest for the search
+
 # to set up a log file where the operations of the script are tracked.
 import logging
 
@@ -68,10 +69,12 @@ path_log = "../log/twitter.log"
 
 # Setup logger
 logger = logging.getLogger('twitter')  # specify the name of the log file.
-hdlr = logging.FileHandler(path_log)  # specify the path
+hdlr = logging.FileHandler(path_log)  # specify the path to the log file.
+
 formatter = logging.Formatter('%(asctime)s (%(levelname)s) - %(message)s')
 # the formatter specify how the messages should be displayed in the log
 # file. Here 'time (priority level) - <message>'.
+
 hdlr.setFormatter(formatter)  # save formatter option
 logger.addHandler(hdlr)  # add to the logger file the formatted options.
 logger.setLevel(logging.INFO)  # specify the level of priority messages
@@ -138,8 +141,9 @@ class MyStreamer(TwythonStreamer):
 
             writer = csv.writer(file)
             writer.writerow(list(tweet.values()))  # write the tweet values
-            # to be saved. Specifiecation at line 157; these are date
-            # user and the text of the tweet.
+            # to be saved. You can specify the entries you want to save
+            # at line 157. For this porgram we decided to save the date
+            # user name and the text of the tweet.
 
     # Insert each Tweet into MySql
     def save_to_sql(self, tweet):
@@ -147,7 +151,8 @@ class MyStreamer(TwythonStreamer):
             self.conn.cursor().execute(
                 """INSERT into tweets(date,user,text) values(%s,%s,%s)""",
                 (list(tweet.values())))  # use s-strings to insert the
-            # tweets into the server.
+            # tweets into the server by entering the list elements one
+            # by one.
             self.conn.commit()  # commit the execution to the database.
             print('Inserted {} tweets'.format(self.counter))
 
