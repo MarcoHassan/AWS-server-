@@ -111,7 +111,9 @@ In this sense before running the script it is necessary to make sure ot have:
 
 In order to avoid of the misuse of tweets information, Twitter will require people willing to extract their tweets data through their APIs to do that through the use of ```API keys```. This will allow Twitter to keep track of a sepecific user queries and to get back to the user in case of misconduct.
 
-In order to obtain such pair of keys it will be necessary to register on [Twitter Apps](https://twitter.com/login?redirect_after_login=https%3A%2F%2Fdeveloper.twitter.com%2Fapps) 
+In order to obtain such pair of keys it will be necessary to register on [Twitter Apps](https://twitter.com/login?redirect_after_login=https%3A%2F%2Fdeveloper.twitter.com%2Fapps) and generate a new couple of keys.
+
+With such set of unique API keys it will be possible to leverage on the Twitter API. For portability we decided in our programs to save the API keys in a  ```json``` file and to import the keys in our python script by reading such file. This is the common used practice in order to deal with sensible information and to mask such private information when operating in shared projects.
 
 #### Libraries
 
@@ -128,7 +130,9 @@ source /home/shared/venv/python36/bin/activate
 ```
 pip install json
 pip install twython
-pip mysql.connector
+pip install mysql.connector
+pip install matplotlib.pyplot 
+pip install pandas
 ```
 
 #### Code
