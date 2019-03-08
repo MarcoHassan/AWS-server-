@@ -80,7 +80,7 @@ Notice the use of **INDEX** in setting up the table. This  will allow a faster q
 
 In this section we are going to explain the set up of a python scrript that automatically imports  all the tweets in a given lanaguage releting to a specific topic the user can choose when running the script.
 
-Before dwelling on the details notice that our code heavily relies on the twython package available on github and copied in the current repository. 
+Before delving on the details notice that our code heavily relies on the twython package available on github and copied in the current repository. 
 
 Moreover pieces of code are referenced from:
 _________________________________________________
@@ -107,6 +107,11 @@ In this sense before running the script it is necessary to make sure ot have:
 
 *Note 2:* the default language of the tweets is english and can be altered at line 178; moreover we invite you to control and update the mySQL connectivity entries at line 103.
 
+#### Twitter API Keys
+
+In order to avoid of the misuse of tweets information, Twitter will require people willing to extract their tweets data through their APIs to do that through the use of ```API keys```. This will allow Twitter to keep track of a sepecific user queries and to get back to the user in case of misconduct.
+
+In order to obtain such pair of keys it will be necessary to register on [Twitter Apps](https://twitter.com/login?redirect_after_login=https%3A%2F%2Fdeveloper.twitter.com%2Fapps) 
 
 #### Libraries
 
