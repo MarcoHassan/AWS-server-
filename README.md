@@ -6,6 +6,12 @@ This repository contains one of the three projects for the Master's class *Advan
 
 The aim was to set up a ```server```, set up a ```MySQL database```, import some data leveraging an ```API``` and finally to run a ```cron job```  periodically on the server to automate some process.
 
+This file is intended as the documentation to the following Github:
+
+TODO 
+[Github - AWS-Server](GITHUB LINK)
+
+
 For the project we decided to use the following tools:
 
 ________________________
@@ -21,9 +27,42 @@ _________________________
 
 **TO BE ADDED...**
 
-## 1. Server set-up 
+## 1. Set-up 
 
-**TO BE ADDED...**
+### Launch instance and connect to instance
+
+The first step is to set-up a server. We decided to use the free-tier AWS server. 
+
+### Install / Update
+
+### Create virtualenv
+
+### Github setup
+
+install python 3.6 
+sudo yum install python36
+
+Create virtual environment for easy package handling and because of:
+"Also realize that some functions of the Amazon Linux AMI might rely on python pointing to version 2.7.x, so you’d probably be better off exploring virtualenv instead, but I digress."
+(http://outofmyhead.olssonandjones.com/2018/02/24/how-to-install-python-3-x-on-amazon-ec2-instance/)
+
+
+cd ~ 
+mkdir venv
+cd venv
+virtualenv -p /usr/bin/python3.6 python36
+source /home/ec2-user/venv/python36/bin/activate
+source /home/shared/venv/python36/bin/activate
+deactivate
+
+Source: https://aws.amazon.com/premiumsupport/knowledge-center/python-boto3-virtualenv/
+
+
+	- Due to the virtual environment both the commands python and pip link to the respective versions we use. So if you don't use a virtualenvironment you may need to use python3 and pip3 instead.
+	- A simple pip install 
+### Github setup (Link to tutorial)
+
+
 
 ## 2. Database Set Up
 
@@ -251,15 +290,17 @@ Should you be interested in compressing the backup or saving|restoring multiple 
 
 Having the server fully running in the back it is possible now to set up python scripts connecting to the server, extracting data and performing the analysis of interest.
 
-As an example we decided to set up briefly a python script connecting to the tweetsDB database, extracting the number of collected tweets by time frame. 
+As an example we decided to set up a python script connecting to the tweetsDB database, extracting the number of collected tweets by time frame. 
 
-You can find the script in the repository above in the tweet_plot.py file available under the src repository.
+You can find the script in the repository above in the tweet_plot.py file in the src folder.
 
 If you use virtual environments to keep your working environment clean, recall to active the virtual environment first.
 
-The collected tweets can then be quickly inspected selecting the time frame of interest as done in our script, where we decided to plot the number of collected tweets per day, plot them, and save the corresponding graph in the home directory of ec2-user of the server.
+The collected tweets can then be quickly inspected selecting the time frame of interest as done in our script, where we decided to plot the number of collected tweets per day, plot them, and saving the corresponding graph in the home directory of ec2-user of the server.
 
-The result will be as in the image below and can be potentially used to visually inspect for the occurence of major events related to the keyword of interest.
+The result will be as in the image below and can be potentially used to visually inspect for the occurrence of major events related to the keyword of interest.
+
+Of course, many more in-depth analysis such as for example a text analysis of the collected tweets can be performed with the data.
 
 ![immagine](https://user-images.githubusercontent.com/42472072/53753139-d29a3b00-3eb0-11e9-9410-6bb412c74c60.png)
 

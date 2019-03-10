@@ -8,8 +8,8 @@
 # Started 2019-02-27
 #
 #
-# This python script heavily relies on the twython package. The idea is
-# the one of downloading Twitter tweets in a given language relating to
+# This python script relies on the twython package. The idea is
+# to download Twitter tweets in a given language relating to
 # a topic to be specified by the user when running the script.
 #
 # This python script leverages the twython package to interact
@@ -19,6 +19,9 @@
 # The API keys can be obtained online following twitter instructions and
 # MUST be saved in a json file called twitter_json
 #
+
+# TODO Testen
+
 # Once the above step is done it is necessary to create a log file where
 # - to track the script execution - and a csv file - where the downloaded
 # tweets will be saved -. Moreover it will be necessary to set up a
@@ -39,7 +42,7 @@ import csv  # to write a csv containing the tweets
 import sys  # for entering the keyword of interest for the search
 import logging  # to set up a log file where the operations of the script are tracked.
 
-# TODO
+# TODO pip freez on server
 import pandas as pd  # To plot
 import matplotlib.pyplot as plt  # to import SQL queries to panda data frame
 
@@ -67,20 +70,22 @@ path_credentials = "../twitter_credentials.json"
 path_data = "../data/tweets.csv"
 path_log = "../log/twitter.log"
 
-# TODO Source
-
 # Setup logger
+
+# Logging inspired by this example:
+# https://docs.python.org/2.7/howto/logging.html#logging-advanced-tutorial
+
 logger = logging.getLogger('twitter')  # specify the name of the log file.
 hdlr = logging.FileHandler(path_log)  # specify the path
 formatter = logging.Formatter('%(asctime)s (%(levelname)s) - %(message)s')
-# the formatter specify how the messages should be displayed in the log
-# file. Here 'time (priority level) - <message>'.
+# the formatter specify how the messages should be displayed in the log file.
+# Here 'time (priority level) - <message>'.
+
 hdlr.setFormatter(formatter)  # save formatter option
 logger.addHandler(hdlr)  # add to the logger file the formatted options.
-logger.setLevel(logging.INFO)  # specify the level of priority messages
-# you want to display. Here: from info level above.
+logger.setLevel(logging.INFO)  # Level of priority messages you want to display. Here: info level and above.
 
-# Here save the search criteria for the tweets you specified in the shell.
+# Saves the search criteria for the tweets you specified in the shell.
 keywords = sys.argv[1]
 
 ####################
@@ -138,8 +143,8 @@ class MyStreamer(TwythonStreamer):
 		with open(path_data, 'a') as file:
 			writer = csv.writer(file)
 			writer.writerow(list(tweet.values()))
-			# Write the tweet values to be saved. Specification at line 157;
-			# these are date user and the text of the tweet.
+		# Write the tweet values to be saved. Specification at line 157;
+		# these are date user and the text of the tweet.
 
 	# Insert each Tweet into MySql
 	def save_to_sql(self, tweet):
@@ -157,7 +162,7 @@ class MyStreamer(TwythonStreamer):
 			# gives the text lost in the log file
 			logging.error('Insertion failed:' + str(list(tweet.values())[2]))
 			self.conn.rollback()  # rollback all the changes done for the
-			# the problematic tweet.
+		# the problematic tweet.
 
 	# Decide what data to import from the tweets
 	def process_tweet(self, tweet):
@@ -173,13 +178,13 @@ class MyStreamer(TwythonStreamer):
 
 		return d
 
-		# Notice; for above possible interesting options to be saved are:
-		# d['user_loc'] = tweet['user']['location']
-		# d['geo_loc'] = tweet['coordinates']
-		# d['favorite_coun'] = tweet['favorite_count']
-		# d['retweet_coun'] = tweet['retweet_count']
-		# d['hashtags'] = [hashtag['text'].encode('utf-8')
-		#                  for hashtag in tweet['entities']['hashtags']]
+	# Notice; additional possibly interesting fields to save are:
+	# d['user_loc'] = tweet['user']['location']
+	# d['geo_loc'] = tweet['coordinates']
+	# d['favorite_coun'] = tweet['favorite_count']
+	# d['retweet_coun'] = tweet['retweet_count']
+	# d['hashtags'] = [hashtag['text'].encode('utf-8')
+	#                  for hashtag in tweet['entities']['hashtags']]
 
 	# Specify the action in case no error occurred. (Overrides Twython method)
 	def on_success(self, data):
@@ -198,7 +203,8 @@ class MyStreamer(TwythonStreamer):
 
 # Instantiate streaming class
 stream = MyStreamer(creds['CONSUMER_KEY'], creds['CONSUMER_SECRET'],
-					creds['ACCESS_TOKEN'], creds['ACCESS_SECRET'])
+						creds['ACCESS_TOKEN'], creds['ACCESS_SECRET'])
+
 
 # Calls the twythonstreamer filter member function that will
 # call the mystreamer on_success and on_error member function of the

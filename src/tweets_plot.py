@@ -24,7 +24,7 @@ def tweetPlot():
 		host='localhost',
 		database='tweetsDB',
 		user='root',
-		password = '1234'
+		password='1234'
 	)
 
 	cur = conn.cursor()
@@ -64,4 +64,3 @@ data.plot(ax=ax, kind='line')
 
 plt.title('Tweets per 5 minutes containing both Trump and Kim')
 plt.savefig('/home/ec2-user/tweets.png')
-
