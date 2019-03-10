@@ -42,6 +42,9 @@ import csv  # to write a csv containing the tweets
 import sys  # for entering the keyword of interest for the search
 import logging  # to set up a log file where the operations of the script are tracked.
 
+# to set up a log file where the operations of the script are tracked.
+import logging
+
 # TODO pip freez on server
 import pandas as pd  # To plot
 import matplotlib.pyplot as plt  # to import SQL queries to panda data frame
@@ -76,10 +79,11 @@ path_log = "../log/twitter.log"
 # https://docs.python.org/2.7/howto/logging.html#logging-advanced-tutorial
 
 logger = logging.getLogger('twitter')  # specify the name of the log file.
-hdlr = logging.FileHandler(path_log)  # specify the path
+hdlr = logging.FileHandler(path_log)  # specify the path to the log file.
+
 formatter = logging.Formatter('%(asctime)s (%(levelname)s) - %(message)s')
-# the formatter specify how the messages should be displayed in the log file.
-# Here 'time (priority level) - <message>'.
+# the formatter specify how the messages should be displayed in the log
+# file. Here 'time (priority level) - <message>'.
 
 hdlr.setFormatter(formatter)  # save formatter option
 logger.addHandler(hdlr)  # add to the logger file the formatted options.
@@ -104,101 +108,103 @@ with open(path_credentials, "r") as file:
 # twython.
 
 class MyStreamer(TwythonStreamer):
-	# Create counter variable for keeping track of the # of downloaded
-	# tweets.
-	counter = 0
+    counter = 0
 
-	# Connect to MySQL Database; ENTER YOUR SPECIFIC DATABASE AND USER
-	# CHOICES HERE.
-	# try to connect to the database
-	try:
-		conn = mysql.connector.connect(
-			host='localhost',
-			database='tweetsDB',
-			user='root',
-			password='ENTER YOUR PASSWORD')
-		if conn.is_connected():
-			# report successful connection in the log file.
-			logger.info('Connected to MySQL database')
-			my_str = "Stream successfully established for Keywords: {}".format(
-				keywords)
-			logger.info(my_str)
+    # Connect to MySQL Database; ENTER YOUR SPECIFIC DATABASE AND USER
+    # CHOICES HERE.
+    # try to connect to the database
+    try:
+        conn = mysql.connector.connect(
+            host='localhost',
+            database='tweetsDB',
+            user='root',
+            password='ENTER YOUR PASSWORD')
+        if conn.is_connected():
+            # report successfull connection in the log file.
+            logger.info('Connected to MySQL database')
+            my_str = "Stream successfully established for Keywords: {}".format(
+                keywords)
+            # report successful connection for the specified keyword
+            logger.info(my_str)
 
-	# In case of failed connection print the error and report an error in
-	# the log file.
-	except mysql.connector.Error as e:
-		print(e)
-		logging.error('The connection with the database failed')
+    # in case of failed connection print the error and report an error in
+    # the log file.
+    except mysql.connector.Error as e:
+        print(e)
+        logging.error('The connection with the database failed')
 
-	# Handle API connection problem and disconnect to the database to free
-	# up resources. (Overrides Twython method)
-	def on_error(self, status_code, data):
-		print(status_code, data)
-		logger.error('Connection lost')
-		self.disconnect()
+    # Handle API connection problem and disconnect to the database to free
+    # up resources.
+    def on_error(self, status_code, data):
+        print(status_code, data)
+        logger.error('Connection lost')
+        self.disconnect()
 
-	# Save each tweet to csv file
-	def save_to_csv(self, tweet):
-		# Open data file with 'a' for appending and not overwriting.
-		with open(path_data, 'a') as file:
-			writer = csv.writer(file)
-			writer.writerow(list(tweet.values()))
-		# Write the tweet values to be saved. Specification at line 157;
-		# these are date user and the text of the tweet.
+    # Save each tweet to csv file
+    def save_to_csv(self, tweet):
+        with open(path_data, 'a') as file:
+            # 'a' for appending and not overwriting.
 
-	# Insert each Tweet into MySql
-	def save_to_sql(self, tweet):
-		try:
-			self.conn.cursor().execute(
-				"""INSERT into tweets(date,user,text) values(%s,%s,%s)""",
-				(list(tweet.values())))  # use s-strings to insert the
-			# tweets into the server.
-			self.conn.commit()  # commit the execution to the database.
-			print('Inserted {} tweets'.format(self.counter))
+            writer = csv.writer(file)
+            writer.writerow(list(tweet.values()))  # write the tweet values
+            # to be saved. You can specify the entries you want to save
+            # at line 157. For this porgram we decided to save the date
+            # user name and the text of the tweet.
 
-		# Inform the user of bug in saving a valid tweet to the database.
-		except Exception as e:
-			print(e)
-			# gives the text lost in the log file
-			logging.error('Insertion failed:' + str(list(tweet.values())[2]))
-			self.conn.rollback()  # rollback all the changes done for the
-		# the problematic tweet.
+    # Insert each Tweet into MySql
+    def save_to_sql(self, tweet):
+        try:
+            self.conn.cursor().execute(
+                """INSERT into tweets(date,user,text) values(%s,%s,%s)""",
+                (list(tweet.values())))  # use s-strings to insert the
+            # tweets into the server by entering the list elements one
+            # by one.
+            self.conn.commit()  # commit the execution to the database.
+            print('Inserted {} tweets'.format(self.counter))
 
-	# Decide what data to import from the tweets
-	def process_tweet(self, tweet):
-		d = {}
+        # Inform the user of bug in saving a valid tweet to the database.
+        except Exception as e:
+            print(e)
+            # gives the text lost in the log file
+            logging.error('Insertion failed:' + str(list(tweet.values())[2]))
+            self.conn.rollback()  # rollback all the changes done for the
+            # the problematic tweet.
 
-		timestamp = mktime_tz(parsedate_tz(tweet['created_at']))
-		dt = datetime.datetime.fromtimestamp(
-			timestamp, pytz.timezone('US/Eastern'))
-		d['date'] = dt.strftime('%Y-%m-%d %H:%M:%S')
+    # Decide what data to import from the tweets
+    def process_tweet(self, tweet):
+        d = {}
 
-		d['user'] = tweet['user']['screen_name'].encode('utf-8')
-		d['text'] = tweet['text'].encode('utf-8')
+        timestamp = mktime_tz(parsedate_tz(tweet['created_at']))
+        dt = datetime.datetime.fromtimestamp(
+            timestamp, pytz.timezone('US/Eastern'))
+        d['date'] = dt.strftime('%Y-%m-%d %H:%M:%S')
 
-		return d
+        d['user'] = tweet['user']['screen_name'].encode('utf-8')
+        d['text'] = tweet['text'].encode('utf-8')
 
-	# Notice; additional possibly interesting fields to save are:
-	# d['user_loc'] = tweet['user']['location']
-	# d['geo_loc'] = tweet['coordinates']
-	# d['favorite_coun'] = tweet['favorite_count']
-	# d['retweet_coun'] = tweet['retweet_count']
-	# d['hashtags'] = [hashtag['text'].encode('utf-8')
-	#                  for hashtag in tweet['entities']['hashtags']]
+        return d
 
-	# Specify the action in case no error occurred. (Overrides Twython method)
-	def on_success(self, data):
-		# Process the tweets
-		tweet_data = self.process_tweet(data)
+        # Notice; for above possible interesting options to be saved are:
+        # d['user_loc'] = tweet['user']['location']
+        # d['geo_loc'] = tweet['coordinates']
+        # d['favorite_coun'] = tweet['favorite_count']
+        # d['retweet_coun'] = tweet['retweet_count']
+        # d['hashtags'] = [hashtag['text'].encode('utf-8')
+        #                  for hashtag in tweet['entities']['hashtags']]
 
-		# Save them
-		self.save_to_csv(tweet_data)
-		self.save_to_sql(tweet_data)
+    # Specify the action in case no error occured.
+    def on_success(self, data):
+        # Process the tweets
+        tweet_data = self.process_tweet(data)
 
-		# Log it
-		my_str = "{} Tweets saved since start".format(self.counter)
-		logger.info(my_str)
-		self.counter += 1
+        # Save them
+        self.save_to_csv(tweet_data)
+        self.save_to_sql(tweet_data)
+
+        # Log it
+        my_str = "{} Tweets saved since start".format(self.counter)
+        logger.info(my_str)
+        self.counter += 1
 
 
 # Instantiate streaming class

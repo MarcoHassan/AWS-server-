@@ -169,7 +169,7 @@ Notice the use of **INDEX** in the setup of the table. This allows for a faster 
 
 In this section we are going to explain the set up of a python script that automatically and in real time imports all tweets containing one or multiple user specified keywords.
 
-Before dwelling on the details notice that our code uses the Twython package available on github as a wrapper for the Twitter API. 
+Before delving on the details notice that our code heavily relies on the twython package available on github and copied in the current repository. 
 
 Moreover pieces of code are referenced from:
 _________________________________________________
@@ -198,6 +198,13 @@ In this sense before running the script it is necessary to make sure to have:
 
 *Note 2:* the default language of the tweets is english and can be altered at line 178; moreover we invite you to control and update the MySQL connectivity entries at line 103.
 
+#### Twitter API Keys
+
+In order to avoid of the misuse of tweets information, Twitter will require people willing to extract their tweets data through their APIs to do that through the use of ```API keys```. This will allow Twitter to keep track of a sepecific user queries and to get back to the user in case of misconduct.
+
+In order to obtain such pair of keys it will be necessary to register on [Twitter Apps](https://twitter.com/login?redirect_after_login=https%3A%2F%2Fdeveloper.twitter.com%2Fapps) and generate a new couple of keys.
+
+With such set of unique API keys it will be possible to leverage on the Twitter API. For portability we decided in our programs to save the API keys in a  ```json``` file and to import the keys in our python script by reading such file. This is the common used practice in order to deal with sensible information and to mask such private information when operating in shared projects.
 
 #### Libraries
 
@@ -221,7 +228,11 @@ source ./venv/python36/bin/activate
 
 3. Install exactly the packages specified in the requirements.txt file 
 ```
-pip install -r requirements.txt
+pip install json
+pip install twython
+pip install mysql.connector
+pip install matplotlib.pyplot 
+pip install pandas
 ```
 
 Alternatively you can, of course, also install the required packages specified in requirements.txt without virtualenv by simply using pip/pip3.  
@@ -257,9 +268,26 @@ Moreover due to the set up of a log file of reference in the python script you w
 
 **Congrats!** You have at this stage a fully functional program automatically downloading and importing the tweets of your specific interest. You can find them both in your database as well as in the csv file.
 
-## 4. Crontab Set Up
+## 4. Connect to the Database and Plot
 
-In this last part we are going to describe the cron job set up in order to run a backup of the precious database periodically.
+Having the server fully running in the back it is possible now to set up python scripts connecting to the server, extracting data and performing the analysis of interest.
+
+As an example we decided to set up briefly a python script connecting to the tweetsDB database, extracting the number of collected tweets by time frame. 
+
+You can find the script in the repository above in the tweet_plot.py file available under the src repository.
+
+If you use virtual environments to keep your working environment clean, recall to active the virtual environment first.
+
+The collected tweets can then be quickly inspected selecting the time frame of interest as done in our script, where we decided to plot the number of collected tweets per day, plot them, and save the corresponding graph in the home directory of ec2-user of the server.
+
+The result will be as in the image below and can be potentially used to visually inspect for the occurence of major events related to the keyword of interest.
+
+![immagine](https://user-images.githubusercontent.com/42472072/53753139-d29a3b00-3eb0-11e9-9410-6bb412c74c60.png)
+
+
+## 5. Crontab Set Up
+
+In this last part we are going to descrbe the cron job set up in order to run a backup of the database periodically and to automatically generated an updated plot as the one shown above.
 
 As a first step it is important to operate through the root user to set up the cron job or to give sudo permission to the user of choice.
 
@@ -272,12 +300,12 @@ For the project we decided to implement the job in the generally valid */var/spo
 cd /var/spool/cron
 
 # to create a crontab in the repository where to specify the cron job to be executed
-crontab -e cron linux repository
+crontab -e 
 ```
 
 After the following step it will be possible to specify the desired time and job to be executed with your favourite editor.
 
-In our case, we decided to run an automatic backup of the MySQL database every 24h at 01:01 a.m., running the following command
+In our case, we decided to run an automatic backup of the mySQL database every 24h at 01:01 a.m., and to save an updated png plot of the downloaded tweets each day at 23:59 running the following command
 
 ```
 ########
@@ -286,7 +314,9 @@ In our case, we decided to run an automatic backup of the MySQL database every 2
 
 MAILTO= <mail> # Enter a mail on, which to be informed about the cron executions.
 
-01 0 1 * * echo "Cron in running at: $(date)" >> /home/ec2-user/cron.log && /usr/bin/mysqldump -u root -p<ENTER YOUR PASSWORD> tweetsDB > /home/ec2-user/backup.sql && echo "Cron is running smoothly and saved a backup of the tweewtsDB database at: $(date)" >> /home/ec2-user/cron.log || echo "At $(date) back-up did not complete asan error occured." >> /home/ec2-user/cron.log
+01 0 1 * * echo "Cron in running at: $(date)" >> /home/ec2-user/cron.log && /usr/bin/mysqldump -u root -p'ENTER YOUR PASSWORD' tweetsDB > /home/ec2-user/backup.sql && echo "Cron is running smoothly and saved a backup of the tweewtsDB database at: $(date)" >> /home/ec2-user/cron.log || echo "At $(date) back-up did not complete asan error occured." >> /home/ec2-user/cron.log
+
+59 23 * * * echo "Cron running at: $(date) and generating the updated tweets.png plot" >> /home/ec2-user/prova.log && source /home/ec2-user/venv/python36/bin/activate >> /home/ec2-user/prova.log 2>&1 && python /home/ec2-user/tweets_plot2.py && echo "Cron job terminated and successfully generated the plot" >> /home/ec2-user/prova.log || "Cron terminating without plotting. An error occured." >> /home/ec2-user/prova.log
 ```
 
 #### Breaking the code up
@@ -300,27 +330,42 @@ MAILTO= <mail> # Enter a mail on, which to be informed about the cron executions
 #  |   |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
 #  |   |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
 #  |   |  |  |  |
-# 01  01  *  *  * 
+# 01  01  *  *  *  ## Part 1
+# 59  23  *  *  *  ## Part 2
 ```
 
 (ii) Inform the user that the cron job start running and specify the hour.
 ```
-echo "Cron in running at: $(date)" >> /home/ec2-user/cron.log
+echo "Cron in running at: $(date)" >> /home/ec2-user/cron.log ## Part 1
+
+echo "Cron running at: $(date) and generating the updated tweets.png plot" >> /home/ec2-user/prova.log  ## Part 2
 ```
 
-(iii) Run the backup 
+(iii)(a) Run the backup in Part 1
 ```
 && /usr/bin/mysqldump -u root -p'ENTER YOUR PASSWORD' tweetsDB > /home/ec2-user/backup.sql
 ```
+(iii)(b) Run the python script for updating the recent tweets trends plot in Part 2
+```
+## Activate virtual environment
+&& source /home/ec2-user/venv/python36/bin/activate >> /home/ec2-user/prova.log 2>&1 
 
-(iv) If successful (*the &&*) inform the user in the log file that the backup of the server was performed
+## Generate the plot
+&& python /home/ec2-user/tweets_plot2.py 
+```
+
+(iv) If successful (*the &&*) inform the user in the log file that the backup of the server was performed and the plot was generated correctly and saved into a ```png```file.
 ```
 && echo "Cron is running smoothly and saved a backup of the tweewtsDB database at: $(date)" >> /home/ec2-user/cron.log
+
+&& echo "Cron job terminated and successfully generated the plot" >> /home/ec2-user/prova.log
 ```
 
-(v) Else, when unsuccessful (*the ||*) infrom the  user in the log file that the backup failed.
+(v) Else, when unsuccessful (*the ||*) infrom the  user in the log file that the backup and/or the plotting failed.
 ```
 || echo "At $(date) back-up did not complete asan error occured." >> /home/ec2-user/cron.log
+
+|| "Cron terminating without plotting. An error occured." >> /home/ec2-user/prova.log
 ```
 
 #### Restore the database through the backup file
@@ -350,6 +395,5 @@ The result will be as in the image below and can be potentially used to visually
 Of course, many more in-depth analysis such as for example a text analysis of the collected tweets can be performed with the data.
 
 ![immagine](https://user-images.githubusercontent.com/42472072/53753139-d29a3b00-3eb0-11e9-9410-6bb412c74c60.png)
-
 
 
