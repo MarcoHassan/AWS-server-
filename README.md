@@ -201,7 +201,7 @@ Notice the use of **INDEX** in the setup of the table. This allows for a faster 
 
 In this section we are going to explain the set up of a python script that automatically and in real time imports all tweets containing one or multiple user specified keywords.
 
-Before delving on the details notice that our code heavily relies on the twython package available on github and copied in the current repository. 
+Before delving on the details notice that our code heavily relies on the twython package available on github. 
 
 Moreover pieces of code are referenced from:
 _________________________________________________
@@ -226,7 +226,7 @@ The python script relies will intereact with two different files and one databas
 
 In this sense when running the scipt you will be asked to specify the path to a .json file where your twitter API credentials are properly stored.
 
-Moreover you will be asked to specify the naming of two files to be created:
+Moreover you will be asked to specify the naming of two files that exist in your shell working directory or that will be created:
 
 (i) A csv file where the imported tweets will be saved in addition to the MySQL file.
  
