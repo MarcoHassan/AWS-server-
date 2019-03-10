@@ -1,10 +1,9 @@
-
 #####################################################
 # Server Project - Automatically downloading tweets #
 #####################################################
 
 # Code for the Server Project
-# alexander.steeb@student.unisg.ch &
+# alexander.steeb@student.unisg.ch
 # marco.hassan30@gmail.com
 # Started 2019-02-27
 #
@@ -14,7 +13,7 @@
 # a topic to be specified by the user when running the script.
 #
 # This python script leverages the twython package to interact
-# with the Twitter servers through their APIs. For the successfull
+# with the Twitter servers through their APIs. For the successful
 # execution of this script it is therefore necessary to dispose of an
 # appropriate set of API keys in order to connect with the Twitter server.
 # The API keys can be obtained online following twitter instructions and
@@ -34,21 +33,21 @@
 # Necessary libraries #
 #######################
 
-# connect to twitter server via the provided API keys. The streamer pack allows to
-from twython import TwythonStreamer
+from twython import TwythonStreamer  # to connect to twitter server via the provided API keys
 import json  # to interact with the json file where the API keys are saved
 import csv  # to write a csv containing the tweets
 import sys  # for entering the keyword of interest for the search
-import logging # to set up a log file where the operations of the script are tracked.
+import logging  # to set up a log file where the operations of the script are tracked.
 
-import pandas as pd # To plot
-import matplotlib.pyplot as plt # to import SQL queries to panda data frame
+# TODO
+import pandas as pd  # To plot
+import matplotlib.pyplot as plt  # to import SQL queries to panda data frame
 
 # SQL
 import mysql.connector  # to connect with the SQL server
 
-# Time packages to get time stamps in order to save the time the
-# tweet was connected.
+# Time packages to get time stamps in order to save the time the tweet was connected and
+# to work with those timestamps
 import time
 import datetime
 from email.utils import parsedate_tz, mktime_tz
@@ -68,8 +67,7 @@ path_credentials = "../twitter_credentials.json"
 path_data = "../data/tweets.csv"
 path_log = "../log/twitter.log"
 
-
-#TODO Source
+# TODO Source
 
 # Setup logger
 logger = logging.getLogger('twitter')  # specify the name of the log file.
@@ -93,135 +91,132 @@ keywords = sys.argv[1]
 
 # Import your API credentials
 with open(path_credentials, "r") as file:
-    creds = json.load(file)
+	creds = json.load(file)
 
-# Create a class that inherits TwythonStreamer functionalities and
+
+# Create a class that inherits TwythonStreamer functionality and
 # passes all the arguments of interest to the streaming functionality of
 # twython.
 
-
 class MyStreamer(TwythonStreamer):
+	# Create counter variable for keeping track of the # of downloaded
+	# tweets.
+	counter = 0
 
-    # Create counter variable for keeping track of the # of downloaded
-    # tweets.
-    counter = 0
+	# Connect to MySQL Database; ENTER YOUR SPECIFIC DATABASE AND USER
+	# CHOICES HERE.
+	# try to connect to the database
+	try:
+		conn = mysql.connector.connect(
+			host='localhost',
+			database='tweetsDB',
+			user='root',
+			password='ENTER YOUR PASSWORD')
+		if conn.is_connected():
+			# report successful connection in the log file.
+			logger.info('Connected to MySQL database')
+			my_str = "Stream successfully established for Keywords: {}".format(
+				keywords)
+			logger.info(my_str)
 
-    # Connect to MySQL Database; ENTER YOUR SPECIFIC DATABASE AND USER
-    # CHOICES HERE.
-    # try to connect to the database
-    try:
-        conn = mysql.connector.connect(
-            host='localhost',
-            database='tweetsDB',
-            user='root',
-            password='ENTER YOUR PASSWORD')
-        if conn.is_connected():
-            # report successfull connection in the log file.
-            logger.info('Connected to MySQL database')
-            my_str = "Stream successfully established for Keywords: {}".format(
-                keywords)
-            # report successful connection for the specified keyword
-            logger.info(my_str)
+	# In case of failed connection print the error and report an error in
+	# the log file.
+	except mysql.connector.Error as e:
+		print(e)
+		logging.error('The connection with the database failed')
 
-    # in case of failed connection print the error and report an error in
-    # the log file.
-    except mysql.connector.Error as e:
-        print(e)
-        logging.error('The connection with the database failed')
+	# Handle API connection problem and disconnect to the database to free
+	# up resources. (Overrides Twython method)
+	def on_error(self, status_code, data):
+		print(status_code, data)
+		logger.error('Connection lost')
+		self.disconnect()
 
-    # Handle API connection problem and disconnect to the database to free
-    # up resources.
-    def on_error(self, status_code, data):
-        print(status_code, data)
-        logger.error('Connection lost')
-        self.disconnect()
+	# Save each tweet to csv file
+	def save_to_csv(self, tweet):
+		# Open data file with 'a' for appending and not overwriting.
+		with open(path_data, 'a') as file:
+			writer = csv.writer(file)
+			writer.writerow(list(tweet.values()))
+			# Write the tweet values to be saved. Specification at line 157;
+			# these are date user and the text of the tweet.
 
-    # Save each tweet to csv file
-    def save_to_csv(self, tweet):
-        with open(path_data, 'a') as file:
-            # 'a' for appending and not overwriting.
+	# Insert each Tweet into MySql
+	def save_to_sql(self, tweet):
+		try:
+			self.conn.cursor().execute(
+				"""INSERT into tweets(date,user,text) values(%s,%s,%s)""",
+				(list(tweet.values())))  # use s-strings to insert the
+			# tweets into the server.
+			self.conn.commit()  # commit the execution to the database.
+			print('Inserted {} tweets'.format(self.counter))
 
-            writer = csv.writer(file)
-            writer.writerow(list(tweet.values()))  # write the tweet values
-            # to be saved. Specifiecation at line 157; these are date
-            # user and the text of the tweet.
+		# Inform the user of bug in saving a valid tweet to the database.
+		except Exception as e:
+			print(e)
+			# gives the text lost in the log file
+			logging.error('Insertion failed:' + str(list(tweet.values())[2]))
+			self.conn.rollback()  # rollback all the changes done for the
+			# the problematic tweet.
 
-    # Insert each Tweet into MySql
-    def save_to_sql(self, tweet):
-        try:
-            self.conn.cursor().execute(
-                """INSERT into tweets(date,user,text) values(%s,%s,%s)""",
-                (list(tweet.values())))  # use s-strings to insert the
-            # tweets into the server.
-            self.conn.commit()  # commit the execution to the database.
-            print('Inserted {} tweets'.format(self.counter))
+	# Decide what data to import from the tweets
+	def process_tweet(self, tweet):
+		d = {}
 
-        # Inform the user of bug in saving a valid tweet to the database.
-        except Exception as e:
-            print(e)
-            # gives the text lost in the log file
-            logging.error('Insertion failed:' + str(list(tweet.values())[2]))
-            self.conn.rollback()  # rollback all the changes done for the
-            # the problematic tweet.
+		timestamp = mktime_tz(parsedate_tz(tweet['created_at']))
+		dt = datetime.datetime.fromtimestamp(
+			timestamp, pytz.timezone('US/Eastern'))
+		d['date'] = dt.strftime('%Y-%m-%d %H:%M:%S')
 
-    # Decide what data to import from the tweets
-    def process_tweet(self, tweet):
-        d = {}
+		d['user'] = tweet['user']['screen_name'].encode('utf-8')
+		d['text'] = tweet['text'].encode('utf-8')
 
-        timestamp = mktime_tz(parsedate_tz(tweet['created_at']))
-        dt = datetime.datetime.fromtimestamp(
-            timestamp, pytz.timezone('US/Eastern'))
-        d['date'] = dt.strftime('%Y-%m-%d %H:%M:%S')
+		return d
 
-        d['user'] = tweet['user']['screen_name'].encode('utf-8')
-        d['text'] = tweet['text'].encode('utf-8')
+		# Notice; for above possible interesting options to be saved are:
+		# d['user_loc'] = tweet['user']['location']
+		# d['geo_loc'] = tweet['coordinates']
+		# d['favorite_coun'] = tweet['favorite_count']
+		# d['retweet_coun'] = tweet['retweet_count']
+		# d['hashtags'] = [hashtag['text'].encode('utf-8')
+		#                  for hashtag in tweet['entities']['hashtags']]
 
-        return d
+	# Specify the action in case no error occurred. (Overrides Twython method)
+	def on_success(self, data):
+		# Process the tweets
+		tweet_data = self.process_tweet(data)
 
-        # Notice; for above possible interesting options to be saved are:
-        # d['user_loc'] = tweet['user']['location']
-        # d['geo_loc'] = tweet['coordinates']
-        # d['favorite_coun'] = tweet['favorite_count']
-        # d['retweet_coun'] = tweet['retweet_count']
-        # d['hashtags'] = [hashtag['text'].encode('utf-8')
-        #                  for hashtag in tweet['entities']['hashtags']]
+		# Save them
+		self.save_to_csv(tweet_data)
+		self.save_to_sql(tweet_data)
 
-    # Specify the action in case no error occured.
-    def on_success(self, data):
-        # Process the tweets
-        tweet_data = self.process_tweet(data)
-
-        # Save them
-        self.save_to_csv(tweet_data)
-        self.save_to_sql(tweet_data)
-
-        # Log it
-        my_str = "{} Tweets saved since start".format(self.counter)
-        logger.info(my_str)
-        self.counter += 1
+		# Log it
+		my_str = "{} Tweets saved since start".format(self.counter)
+		logger.info(my_str)
+		self.counter += 1
 
 
 # Instantiate streaming class
 stream = MyStreamer(creds['CONSUMER_KEY'], creds['CONSUMER_SECRET'],
-                    creds['ACCESS_TOKEN'], creds['ACCESS_SECRET'])
-
+					creds['ACCESS_TOKEN'], creds['ACCESS_SECRET'])
 
 # Calls the twythonstreamer filter member function that will
 # call the mystreamer on_success and on_error member function of the
 # Mystreamer function and execute the code.
 
 # Moreover the function below will reactivate the tweets downloaded after
-# 5 sec. after an error occured.
+# 5 sec. after an error occurred.
+
 
 def cont_streamer():
-    try:
-        stream.statuses.filter(track=keywords, language='en')
-    except Exception as e:
-        print(e)
-        print('Failed; wait 5 seconds')
-        time.sleep(5)
-        print('Try again')
-        cont_streamer()
+	try:
+		stream.statuses.filter(track=keywords, language='en')
+	except Exception as e:
+		print(e)
+		print('Failed; wait 5 seconds')
+		time.sleep(5)
+		print('Try again')
+		cont_streamer()
 
 
 #############
