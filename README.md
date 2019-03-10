@@ -2,22 +2,24 @@
 
 **Authors: Marco Hassan, Alexander Steeb**
 
+**Contact: marco.hassan30@gmail.com, alexander.steeb@gmx.de**
+
 This repository contains one of the three projects for the Master's class *Advanced Data Analysis and Numerical Methods* at the University of St. Gallen.
 
 The aim was to set up a ```server```, set up a ```MySQL database```, import some data leveraging an ```API``` and finally to run a ```cron job```  periodically on the server to automate some process.
 
 This file is intended as the documentation to the following Github:
 
-TODO 
-[Github - AWS-Server](GITHUB LINK)
+[Github - AWS-Server](https://github.com/MarcoHassan/AWS-server-)
 
 
 For the project we decided to use the following tools:
 
 ________________________
-**Server:** AWS ec2 sever.
+**Server:** AWS EC2 sever.
 
-**Data Collection:** Collection Tweets matching user specified keywords continously and in realtime using the Twitter API and a MySQL database.
+**Data Collection:** Collecting tweets matching user specified keywords continuously and in realtime using 
+the Twitter API and a MySQL database.
 
 **Cron job:** Daily back up of the database.
 _________________________
@@ -25,31 +27,52 @@ _________________________
 
 ## Introduction
 
-Data is the most valuable resource of the 21st century. With a relatively small investment and some programming skills one can gain insights that would otherwise not be freely accessible. A lot of data - while in principle free - is only available for a short amount of time. 
+Data is the most valuable resource of the 21st century. 
+With a relatively small investment and some programming skills one can gain insights 
+that would otherwise not be freely accessible. 
+A lot of data - while in principle free - is only available briefly. 
 
-A server that runs 24/7 with a program that collects such data in a user specified format and at a regular interval can mitigate these problems.
+A server that runs 24/7 with a program that collects such data in a user specified format 
+and at a regular interval can mitigate these problems.
 
-This can be useful in a variety of different scenarios. For example, it can be useful to generate data for research or business purposes or simply to build fun projects.
+Such a setup can be useful in a variety of different scenarios. For example, it can be used to generate data for research or business purposes or simply to build fun projects.
 
 This project is intended to demonstrate how relatively easy it is to collect data otherwise not freely available in the same way
 
-Structure: 
+The structure of this documentation is as follows: 
+
+1. Server setup
+2. Database setup
+3. Twitter API Connection, Data Collection, and Database Update
+4. Plotting the acquired data
 
 ## 1. Set-up 
  
-First, we considered multiple different offerings for a server to host our project.
+**First, we considered multiple different offerings for a server to host our project.**
 
-The requirements were rather simple. It had to have at least on decent CPU core, at least 1gb of ram/storage and a good internet connection. Especially important for this project was the uptime of the server since we will acquire our twitter data not periodically but constantly 24/7.
+The requirements were rather simple. 
++ At least on decent CPU core 
++ At least 1gb of ram/storage 
++ A good internet connection 
++ High availability
 
-Based on those requirements we chose a free tier AWS EC2 instance for the following reasons
-o	We already had an account and their free tier fulfills our basic requirements and promises extremely high reliability
-o	A basic understanding of the AWS Ecosystem could be a valuable skill considering the importance AWS today has in all kinds of disciplines.
-o	AWS comes with many added features which are on the one hand intimidating and difficult to master but on the other hand also can be highly useful. For example, we used the extensive monitoring capabilities of AWS to check the CPU usage of our system and similar stats from the browser without the need to connect to the instance.
+Especially the last point was important for this project since we will acquire our twitter data 
+not periodically but constantly 24/7.
 
-The steps that were necessary for the setup of our EC2 instance were the following:
+Based on those requirements we chose a free tier AWS EC2 instance for the following reasons:
++ We already had an account and their free tier fulfills our basic requirements and promises extremely high reliability.
++ A basic understanding of the AWS ecosystem could be a valuable skill considering the importance AWS has today in all kinds of disciplines.
++ AWS offers free (limited) access to many of its features including a full year of free access to a basic EC2 instance.
++ AWS comes with many added features which are on the one hand intimidating and difficult to master but on the other hand can also be highly useful. 
+For example, we used the extensive monitoring capabilities of AWS to check the CPU usage of our system and similar stats from the browser without the need to connect to the instance.
 
-Creating an account (credit card required but all we use is free tier)
-Launch of the free tier ec2 instance with the following operating system:
+
+**The steps that were necessary for the setup of the EC2 instance were the following:**
+
+We will only briefly explain the EC2 Setup since there are many great tutorial already online like for example [this one](https://aws.amazon.com/getting-started/tutorials/launch-a-virtual-machine/?trk=gs_card).
+
+1. Creating an account (credit card required but nothing will be charged since we only use the free tier EC2 instance)
+2. Launch an instance with the following operating system:
 o	LINUX […]
 
 Connect to the server
@@ -75,6 +98,15 @@ sudo yum install python36
 
 
 
+
+**Cyberduck**
+
+Additionally for convenience reasons we used the free SFTP client **[Cyberduck](https://cyberduck.io)**
+to quickly transfer files between our local machines and our server.
+
+**Git/Github**
+
+To further facilitate collaboration we used Git and Github.
 
 ### Launch instance and connect to instance
 
@@ -378,7 +410,7 @@ mysql -u <user> -p < <path>/backup.sql
 
 Should you be interested in compressing the backup or saving|restoring multiple databases at once, we refer you to this  [mysqldump Tutorial](http://webcheatsheet.com/sql/mysql_backup_restore.php).
 
-## 5. Connect to the Database and Plot
+## 5. Plotting the acquired data
 
 Having the server fully running in the back it is possible now to set up python scripts connecting to the server, extracting data and performing the analysis of interest.
 
