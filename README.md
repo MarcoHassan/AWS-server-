@@ -212,24 +212,6 @@ _________________________________________________
 **Source 2:** [MySQL - Connector/Python Coding Examples](https://dev.mysql.com/doc/connector-python/en/connector-python-examples.html)
 ________________________________________________
 
-#### General Information
-
-The python script we are going to present relies on the existence of two files and one database to run smoothly.
-
-In this sense before running the script it is necessary to make sure to have:
-
-**Stimmt das???**
-
-(i) A csv file where the imported tweets will be saved under the correct path location ../data/tweets.csv
- 
-(ii) A log file where the user can find documentation on the smoothly operation of the script; this should be saved under ../log/twitter.log
-
-(iii) A MySQL database as specified above.
-
-*Note 1:* the naming conventions of the files should meet the one in the script. Should that not be the case it will be necessary to manually adjust the script.
-
-*Note 2:* the default language of the tweets is english and can be altered at line 178; moreover we invite you to control and update the MySQL connectivity entries at line 103.
-
 #### Twitter API Keys
 
 In order to avoid of the misuse of tweets information, Twitter will require people willing to extract their tweets data through their APIs to do that through the use of ```API keys```. This will allow Twitter to keep track of a sepecific user queries and to get back to the user in case of misconduct.
@@ -237,6 +219,24 @@ In order to avoid of the misuse of tweets information, Twitter will require peop
 In order to obtain such pair of keys it will be necessary to register on [Twitter Apps](https://twitter.com/login?redirect_after_login=https%3A%2F%2Fdeveloper.twitter.com%2Fapps) and generate a new couple of keys.
 
 With such set of unique API keys it will be possible to leverage on the Twitter API. For portability we decided in our programs to save the API keys in a  ```json``` file and to import the keys in our python script by reading such file. This is the common used practice in order to deal with sensible information and to mask such private information when operating in shared projects.
+
+#### General Information
+
+The python script relies will intereact with two different files and one database.
+
+In this sense when running the scipt you will be asked to specify the path to a .json file where your twitter API credentials are properly stored.
+
+Moreover you will be asked to specify the naming of two files to be created:
+
+(i) A csv file where the imported tweets will be saved in addition to the MySQL file.
+ 
+(ii) A log file where the user can find documentation on the smoothly operation of the script.
+
+Both will be saved under the working directory of your shell at the moment of running the python script.
+
+Moreover, you will be asked to provide your login credentials for your MySQL database system  at line 103.
+
+As a final note, please notice that the default language of the tweets to be downloaded is english and can be altered at line 178.
 
 #### Libraries
 
@@ -410,22 +410,5 @@ mysql -u <user> -p < <path>/backup.sql
 
 Should you be interested in compressing the backup or saving|restoring multiple databases at once, we refer you to this  [mysqldump Tutorial](http://webcheatsheet.com/sql/mysql_backup_restore.php).
 
-## 5. Plotting the acquired data
-
-Having the server fully running in the back it is possible now to set up python scripts connecting to the server, extracting data and performing the analysis of interest.
-
-As an example we decided to set up a python script connecting to the tweetsDB database, extracting the number of collected tweets by time frame. 
-
-You can find the script in the repository above in the tweet_plot.py file in the src folder.
-
-If you use virtual environments to keep your working environment clean, recall to active the virtual environment first.
-
-The collected tweets can then be quickly inspected selecting the time frame of interest as done in our script, where we decided to plot the number of collected tweets per day, plot them, and saving the corresponding graph in the home directory of ec2-user of the server.
-
-The result will be as in the image below and can be potentially used to visually inspect for the occurrence of major events related to the keyword of interest.
-
-Of course, many more in-depth analysis such as for example a text analysis of the collected tweets can be performed with the data.
-
-![immagine](https://user-images.githubusercontent.com/42472072/53753139-d29a3b00-3eb0-11e9-9410-6bb412c74c60.png)
 
 
