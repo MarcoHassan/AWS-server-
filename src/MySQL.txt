@@ -1,3 +1,11 @@
+# Main SQL commands used in this project
+#
+# Code for the Server Project
+# alexander.steeb@student.unisg.ch &
+# marco.hassan30@gmail.com
+# Started 2019-02-27
+
+
 # Start server after installing it
 
 mysql.server start
@@ -6,7 +14,7 @@ mysql.server stop
 
 mysql -uroot
 
-# Creat Database
+# Create Database
 mysqladmin -uroot create tweetsDB
 
 #### in mysql ###
@@ -14,7 +22,7 @@ mysqladmin -uroot create tweetsDB
 # Use the DB
 use tweetsDB
 
-# Creat table
+# Create table
 CREATE TABLE tweets(
 
 date TIMESTAMP,
@@ -25,7 +33,7 @@ INDEX user (user),
 INDEX date (date)
 );
 
-# Delet all rows of a table
+# Delete all rows of a table
 TRUNCATE TABLE tweets
 
 # See tweets by minute/ hour

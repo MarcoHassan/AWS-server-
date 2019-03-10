@@ -3,22 +3,28 @@
 # Server Project - Automatically downloading tweets #
 #####################################################
 
+# Code for the Server Project
+# alexander.steeb@student.unisg.ch &
+# marco.hassan30@gmail.com
+# Started 2019-02-27
+#
+#
 # This python script heavily relies on the twython package. The idea is
 # the one of downloading Twitter tweets in a given language relating to
 # a topic to be specified by the user when running the script.
-
+#
 # This python script leverages the twython package to interact
 # with the Twitter servers through their APIs. For the successfull
 # execution of this script it is therefore necessary to dispose of an
 # appropriate set of API keys in order to connect with the Twitter server.
 # The API keys can be obtained online following twitter instructions and
 # MUST be saved in a json file called twitter_json
-
+#
 # Once the above step is done it is necessary to create a log file where
 # - to track the script execution - and a csv file - where the downloaded
 # tweets will be saved -. Moreover it will be necessary to set up a
 # mysql server.
-
+#
 # Notice that the naming of the csv, log and database should match the one
 # used in this script. An adjustment below will be necessary if different
 # naming will be used. In addition if you search tweets in a different
@@ -33,13 +39,10 @@ from twython import TwythonStreamer
 import json  # to interact with the json file where the API keys are saved
 import csv  # to write a csv containing the tweets
 import sys  # for entering the keyword of interest for the search
-# to set up a log file where the operations of the script are tracked.
-import logging
+import logging # to set up a log file where the operations of the script are tracked.
 
-# To plot
-# to import SQL queries to panda data frame
-import pandas as pd
-import matplotlib.pyplot as plt
+import pandas as pd # To plot
+import matplotlib.pyplot as plt # to import SQL queries to panda data frame
 
 # SQL
 import mysql.connector  # to connect with the SQL server
@@ -49,7 +52,7 @@ import mysql.connector  # to connect with the SQL server
 import time
 import datetime
 from email.utils import parsedate_tz, mktime_tz
-import pytz  # $ pip install pytz
+import pytz
 
 ##########################
 
@@ -65,6 +68,8 @@ path_credentials = "../twitter_credentials.json"
 path_data = "../data/tweets.csv"
 path_log = "../log/twitter.log"
 
+
+#TODO Source
 
 # Setup logger
 logger = logging.getLogger('twitter')  # specify the name of the log file.

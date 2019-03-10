@@ -52,6 +52,9 @@ mysqladmin -u root -p create tweetsDB
 ```
 
 And finally we created a data table that matches the structure of our downloaded tweets.
+
+**#favorites???**
+
 ```
 CREATE TABLE tweets(
 
@@ -118,14 +121,14 @@ If you are using virtual environments you can simply create a new environment an
 
 1. Create a new virtual environment
 ```
-mkdir venv
-cd venv
+mkdir venv-server
+cd venv-server
 virtualenv -p /usr/bin/python3.6 python36
 ```
 It could be that your python version is installed in a different location. In this case you would have to adjust the python path.
 
 
-2. Activate and switch to your local environment
+2. Activate the local environment
 ```
 source ./venv/python36/bin/activate
 ```
@@ -135,12 +138,12 @@ source ./venv/python36/bin/activate
 pip install -r requirements.txt
 ```
 
-Alternatively you can, of course, also install the required packages without virtualenv by simply using pip/pip3.  
+Alternatively you can, of course, also install the required packages specified in requirements.txt without virtualenv by simply using pip/pip3.  
 
 
 #### Code
 
-Please find the python code for the project in the above src directory in the twystream.py file. 
+Please find the python code for the project in the twystream.py file in the src directory. 
 We tried to describe the code in the most exhaustive way possible.
 
 Do not hesitate to contact us in case of doubts.
@@ -148,7 +151,7 @@ Do not hesitate to contact us in case of doubts.
 
 #### Instruction for the script execution
 
-Once you imported the python script, created the supporting files and database, and updated the connectivity and naming appropriately you will be able to run the script through the following command:
+Once you have imported the python script, created the supporting files and database, and updated the SQL and Twitter API credentials you will be able to run the script with the following command:
 
 ```
 python <path>/twystream.py
@@ -156,17 +159,21 @@ python <path>/twystream.py
 
 The script will start running at this point. Notice that the script will run infinitely as when errors occurs the program will simply reactivate after 5 sec. 
 
-You can therefore interrupt the execution of the program with the Keyboard interrupt command. It is moreover advisable to run the program in the background by running the following code
+This ensures that after a disconnect for whatever reason the program automatically tries to reconnect immediately.
+
+You can interrupt the execution of the program with the keyboard interrupt command. It is moreover advisable to run the program in the background by running the following code
+
 ```
-ASK ALEX
+ nohup ....
 ```
-Moreover due to the set up of a log file of reference in the python script you will be able to follow and check the operations of the program by inspecting the **twitter.log** file generated at the begging.
+
+Moreover due to the set up of a log file of reference in the python script you will be able to follow and check the operations of the program by inspecting the **twitter.log** file generated at the beginning.
 
 **Congrats!** You have at this stage a fully functional program automatically downloading and importing the tweets of your specific interest. You can find them both in your database as well as in the csv file.
 
 ## 4. Crontab Set Up
 
-In this last part we are going to descrbe the cron job set up in order to run a backup of the precious database periodically.
+In this last part we are going to describe the cron job set up in order to run a backup of the precious database periodically.
 
 As a first step it is important to operate through the root user to set up the cron job or to give sudo permission to the user of choice.
 
@@ -184,7 +191,7 @@ crontab -e cron linux repository
 
 After the following step it will be possible to specify the desired time and job to be executed with your favourite editor.
 
-In our case, we decided to run an automatic backup of the mySQL database every 24h at 01:01 a.m., running the following command
+In our case, we decided to run an automatic backup of the MySQL database every 24h at 01:01 a.m., running the following command
 
 ```
 ########
@@ -193,7 +200,7 @@ In our case, we decided to run an automatic backup of the mySQL database every 2
 
 MAILTO= <mail> # Enter a mail on, which to be informed about the cron executions.
 
-01 0 1 * * echo "Cron in running at: $(date)" >> /home/ec2-user/cron.log && /usr/bin/mysqldump -u root -p'ENTER YOUR PASSWORD' tweetsDB > /home/ec2-user/backup.sql && echo "Cron is running smoothly and saved a backup of the tweewtsDB database at: $(date)" >> /home/ec2-user/cron.log || echo "At $(date) back-up did not complete asan error occured." >> /home/ec2-user/cron.log
+01 0 1 * * echo "Cron in running at: $(date)" >> /home/ec2-user/cron.log && /usr/bin/mysqldump -u root -p<ENTER YOUR PASSWORD> tweetsDB > /home/ec2-user/backup.sql && echo "Cron is running smoothly and saved a backup of the tweewtsDB database at: $(date)" >> /home/ec2-user/cron.log || echo "At $(date) back-up did not complete asan error occured." >> /home/ec2-user/cron.log
 ```
 
 #### Breaking the code up
@@ -232,6 +239,7 @@ echo "Cron in running at: $(date)" >> /home/ec2-user/cron.log
 
 #### Restore the database through the backup file
 
+#TODO 
 Given the structure of the mysqldump command that will save all of the syntax of the database it will be sufficient to run the following command 
 ```
 mysql -u <user> -p < <path>/backup.sql

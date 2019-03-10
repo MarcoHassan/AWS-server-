@@ -2,11 +2,17 @@
 # Crontab Set Up #
 ##################
 
+# Code for the Server Project
+# alexander.steeb@student.unisg.ch &
+# marco.hassan30@gmail.com
+# Started 2019-02-27
+
+
 SHELL=/bin/bash
 # MAILTO=marco.hassan30@gmail.com # Enter a mail on which to return the cron executions
 
 
-## Execute the pyhton script to connect to mysql and run a backup each day at 00:01.
+## Execute the python script to connect to mysql and run a backup each day at 00:01.
 
 ##########
 # Format #
