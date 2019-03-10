@@ -314,7 +314,7 @@ The collected tweets can then be quickly inspected selecting the time frame of i
 
 The result will be as in the image below and can be potentially used to visually inspect for the occurence of major events related to the keyword of interest.
 
-![immagine](https://user-images.githubusercontent.com/42472072/53753139-d29a3b00-3eb0-11e9-9410-6bb412c74c60.png)
+![immagine](https://user-images.githubusercontent.com/42472072/54092644-e0f3c580-438e-11e9-9a7d-d623ae570f4d.png)
 
 
 ## 5. Crontab Set Up
