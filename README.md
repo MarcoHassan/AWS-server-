@@ -378,22 +378,5 @@ mysql -u <user> -p < <path>/backup.sql
 
 Should you be interested in compressing the backup or saving|restoring multiple databases at once, we refer you to this  [mysqldump Tutorial](http://webcheatsheet.com/sql/mysql_backup_restore.php).
 
-## 5. Connect to the Database and Plot
-
-Having the server fully running in the back it is possible now to set up python scripts connecting to the server, extracting data and performing the analysis of interest.
-
-As an example we decided to set up a python script connecting to the tweetsDB database, extracting the number of collected tweets by time frame. 
-
-You can find the script in the repository above in the tweet_plot.py file in the src folder.
-
-If you use virtual environments to keep your working environment clean, recall to active the virtual environment first.
-
-The collected tweets can then be quickly inspected selecting the time frame of interest as done in our script, where we decided to plot the number of collected tweets per day, plot them, and saving the corresponding graph in the home directory of ec2-user of the server.
-
-The result will be as in the image below and can be potentially used to visually inspect for the occurrence of major events related to the keyword of interest.
-
-Of course, many more in-depth analysis such as for example a text analysis of the collected tweets can be performed with the data.
-
-![immagine](https://user-images.githubusercontent.com/42472072/53753139-d29a3b00-3eb0-11e9-9410-6bb412c74c60.png)
 
 
