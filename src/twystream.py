@@ -59,12 +59,27 @@ import pytz  # $ pip install pytz
 # General set up #
 ##################
 
-# Please ENTER YOUR NAMING CONVENTIONS AND SPECIFY YOUR PATHS HERE
+# Log file creation in the local directory
 
-# File paths to API keys, csv and log file.
-path_credentials = "../twitter_credentials.json"
-path_data = "../data/tweets.csv"
-path_log = "../log/twitter.log"
+log_file = input(
+    "Please specify the log file name of desire w/o file format here: ")
+path_log = "./" + log_file + ".log"
+outfile = open(path_log, "w")
+outfile.write("")
+outfile.close()
+
+# API key credentials file
+credentials = input(
+    "Please specify the path to the json file displaying your API credentials: ")
+path_credentials = credentials
+
+# Csv file creation in the local directory.
+csv = input(
+    "Please specify the document name of your csv file - w/o file format - here: ")
+path_data = "./data/" + csv + ".csv"
+outfile = open(csv, "w")
+outfile.write("")
+outfile.close()
 
 
 # Setup logger
