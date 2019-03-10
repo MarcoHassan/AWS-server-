@@ -64,16 +64,23 @@ Based on those requirements we chose a free tier AWS EC2 instance for the follow
 + A basic understanding of the AWS ecosystem could be a valuable skill considering the importance AWS has today in all kinds of disciplines.
 + AWS offers free (limited) access to many of its features including a full year of free access to a basic EC2 instance.
 + AWS comes with many added features which are on the one hand intimidating and difficult to master but on the other hand can also be highly useful. 
-For example, we used the extensive monitoring capabilities of AWS to check the CPU usage of our system and similar stats from the browser without the need to connect to the instance.
+  For example, we used the extensive monitoring capabilities of AWS to check the CPU usage of our system and similar stats from the browser without the need to connect to the instance.
 
 
 **The steps that were necessary for the setup of the EC2 instance were the following:**
 
-We will only briefly explain the EC2 Setup since there are many great tutorial already online like for example [this one](https://aws.amazon.com/getting-started/tutorials/launch-a-virtual-machine/?trk=gs_card).
+We will only briefly explain the EC2 Setup since there are many great tutorial already online like for example 
+[here](https://aws.amazon.com/getting-started/tutorials/launch-a-virtual-machine/?trk=gs_card).
 
-1. Creating an account (credit card required but nothing will be charged since we only use the free tier EC2 instance)
-2. Launch an instance with the following operating system:
-o	LINUX […]
+1. **Create an AWS account** (credit card required but nothing will be charged since we only use the free tier EC2 instance)
+
+2. **Launch an instance** with the following operating system: *Amazon Linux AMI 2018.03.0 (HVM), SSD Volume Type*. 
+   This image already includes a variety of useful programs.
+
+3. **Next select the instance type**. In this case we choose *t2.micro* which is the typ included in the free tier.
+   If your program has higher software requirements you could simply select a stronger instance type which fits your project.
+
+4. **Generate/ select key pair** to access the instance.  
 
 Connect to the server
  
@@ -97,8 +104,6 @@ install python 3.6
 sudo yum install python36
 
 
-
-
 **Cyberduck**
 
 Additionally for convenience reasons we used the free SFTP client **[Cyberduck](https://cyberduck.io)**
@@ -106,7 +111,8 @@ to quickly transfer files between our local machines and our server.
 
 **Git/Github**
 
-To further facilitate collaboration we used Git and Github.
+To further facilitate collaboration we used Git and Github. As mentioned above the whole project can also be found there.
+
 
 ### Launch instance and connect to instance
 
