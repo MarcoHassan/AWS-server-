@@ -2,24 +2,24 @@
 
 **Authors: Marco Hassan, Alexander Steeb**
 
-This repository contains one of the three semester homeworks for the Master's class *Advanced Data Analysis and Numerical Methods* at the University of St. Gallen.
+This repository contains one of the three projects for the Master's class *Advanced Data Analysis and Numerical Methods* at the University of St. Gallen.
 
-The aim was to set up a ```server```, set up a ```mySQL database```, import some data leveraging an ```API``` and finally to run a ```cron job```  periodically on the server to automate some process.
+The aim was to set up a ```server```, set up a ```MySQL database```, import some data leveraging an ```API``` and finally to run a ```cron job```  periodically on the server to automate some process.
 
-For the project we decided to follow the following approach:
+For the project we decided to use the following tools:
 
 ________________________
 **Server:** AWS ec2 sever.
 
-**Data Collection:** Tweets collection and leverage the Twitter APIs and automatically importing the tweets in the mySQL database.
+**Data Collection:** Collection Tweets matching user specified keywords continously and in realtime using the Twitter API and a MySQL database.
 
-**Cron job:** Daily back up the database.
+**Cron job:** Daily back up of the database.
 _________________________
 
 
-## Inrtroduction
+## Introduction
 
-** TO BE ADDED...**
+**TO BE ADDED...**
 
 ## 1. Server set-up 
 
@@ -27,13 +27,13 @@ _________________________
 
 ## 2. Database Set Up
 
-Once the server was properly set up we downloaded first the mySQL software on the server running the following command.
+Once the server was properly set up we first downloaded the MySQL software on the server running the following command.
 
 ```
-sudo yum install mysql-server
+sudo yum install Mysql-server
 ```
 
-After the successfull installation on the server we specified the automatic start up of mySQL at the next reconnection with the server
+After the successful installation on the server we specified the automatic start up of MySQL after a reboot and started the service:
 
 ```
 sudo chkconfig mysqld on
@@ -41,46 +41,46 @@ sudo chkconfig mysqld on
 sudo service mysqld start
 ```
 
-Finally we specified the user admistrator for the software
+Finally we specified the user administrator for the software. Of course you can change the user name and password.
 ```
 mysqladmin -u root password <enter your password>
 ```
 
-Given the successful general set up of the software we proceeded by creating a database of reference for our tweet dataset.
+Given the successful general set up of the software we proceeded by creating a database for our tweet dataset called tweetsDB.
 ```
 mysqladmin -u root -p create tweetsDB
 ```
 
-And finally we created a data table that would met the structure of our downloaded tweets
+And finally we created a data table that matches the structure of our downloaded tweets.
 ```
 CREATE TABLE tweets(
 
-user VARCHAR(60),
+    user VARCHAR(60),
 
-date TIMESTAMP,
+    date TIMESTAMP,
 
-text  VARCHAR(300),
+    text  VARCHAR(300),
 
-favorite_count INT,
+    favorite_count INT,
 
- 
 
-INDEX user (user), 
+    INDEX user (user), 
 
-INDEX date (date),
+    INDEX date (date),
 
-INDEX favorite_count (favorite_count)
+    INDEX favorite_count (favorite_count)
 
 );
 ```
  
-Notice the use of **INDEX** in setting up the table. This  will allow a faster query of the data without slowing down the software as the tweets dataset are **static** and imported tweets will not be dynamically adjusted in a second moment.
+Notice the use of **INDEX** in the setup of the table. This allows for a faster query of the data by creating an additional index file.
+ 
  
 ## 3. Twitter API Connection, Data Collection, and Database Update
 
-In this section we are going to explain the set up of a python scrript that automatically imports  all the tweets in a given lanaguage releting to a specific topic the user can choose when running the script.
+In this section we are going to explain the set up of a python script that automatically and in real time imports all tweets containing one or multiple user specified keywords.
 
-Before dwelling on the details notice that our code heavily relies on the twython package available on github and copied in the current repository. 
+Before dwelling on the details notice that our code uses the Twython package available on github as a wrapper for the Twitter API. 
 
 Moreover pieces of code are referenced from:
 _________________________________________________
@@ -88,57 +88,70 @@ _________________________________________________
 **Source 1:** [Accessing Twitter API with Python](https://stackabuse.com/accessing-the-twitter-api-with-python/) 
 
 
-**Source 2:** **ASK ALEX**
+**Source 2:** [MySQL - Connector/Python Coding Examples](https://dev.mysql.com/doc/connector-python/en/connector-python-examples.html)
 ________________________________________________
 
 #### General Information
 
 The python script we are going to present relies on the existence of two files and one database to run smoothly.
 
-In this sense before running the script it is necessary to make sure ot have:
+In this sense before running the script it is necessary to make sure to have:
 
-(i) A csv file where the imported tweeets will be saved under the correct path location ../data/tweets.csv
+**Stimmt das???**
+
+(i) A csv file where the imported tweets will be saved under the correct path location ../data/tweets.csv
  
 (ii) A log file where the user can find documentation on the smoothly operation of the script; this should be saved under ../log/twitter.log
 
-(iii) A fully specified mySQL database specified as in 2. above.
+(iii) A MySQL database as specified above.
 
 *Note 1:* the naming conventions of the files should meet the one in the script. Should that not be the case it will be necessary to manually adjust the script.
 
-*Note 2:* the default language of the tweets is english and can be altered at line 178; moreover we invite you to control and update the mySQL connectivity entries at line 103.
+*Note 2:* the default language of the tweets is english and can be altered at line 178; moreover we invite you to control and update the MySQL connectivity entries at line 103.
 
 
 #### Libraries
 
-The script relies on the following packages that should be downloaded -either on the virtual environment as in our case, or in the appropriate directory using the pip/pip3 package manager.
+The required packages for the script are documented in the **requirements.txt** file.
 
-Would you wish to follow our approach we invite you to follow the following steps:
+If you are using virtual environments you can simply create a new environment and run the following commands to install exactly the packages we use:
 
-1. Actiavte and switch to your local environment
+1. Create a new virtual environment
 ```
-source /home/shared/venv/python36/bin/activate 
+mkdir venv
+cd venv
+virtualenv -p /usr/bin/python3.6 python36
+```
+It could be that your python version is installed in a different location. In this case you would have to adjust the python path.
+
+
+2. Activate and switch to your local environment
+```
+source ./venv/python36/bin/activate
 ```
 
-2. Dowload the needed packages
+3. Install exactly the packages specified in the requirements.txt file 
 ```
-pip install json
-pip install twython
-pip mysql.connector
+pip install -r requirements.txt
 ```
+
+Alternatively you can, of course, also install the required packages without virtualenv by simply using pip/pip3.  
+
 
 #### Code
 
-Please find the python code for the project in the above src directory in the twystream.py file. We tried to describe the code in the most exhaustive possible way.
+Please find the python code for the project in the above src directory in the twystream.py file. 
+We tried to describe the code in the most exhaustive way possible.
 
 Do not hesitate to contact us in case of doubts.
 
 
 #### Instruction for the script execution
 
-Once you imported the python script, created the supporting files and database and updated the connectivity and naming appropriately you will be able to run the script through the following command:
+Once you imported the python script, created the supporting files and database, and updated the connectivity and naming appropriately you will be able to run the script through the following command:
 
 ```
-python/python3 <path>/twystream.py
+python <path>/twystream.py
 ```
 
 The script will start running at this point. Notice that the script will run infinitely as when errors occurs the program will simply reactivate after 5 sec. 
