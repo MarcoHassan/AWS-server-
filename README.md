@@ -25,9 +25,56 @@ _________________________
 
 ## Introduction
 
-**TO BE ADDED...**
+Data is the most valuable resource of the 21st century. With a relatively small investment and some programming skills one can gain insights that would otherwise not be freely accessible. A lot of data - while in principle free - is only available for a short amount of time. 
+
+A server that runs 24/7 with a program that collects such data in a user specified format and at a regular interval can mitigate these problems.
+
+This can be useful in a variety of different scenarios. For example, it can be useful to generate data for research or business purposes or simply to build fun projects.
+
+This project is intended to demonstrate how relatively easy it is to collect data otherwise not freely available in the same way
+
+Structure: 
 
 ## 1. Set-up 
+ 
+First, we considered multiple different offerings for a server to host our project.
+
+The requirements were rather simple. It had to have at least on decent CPU core, at least 1gb of ram/storage and a good internet connection. Especially important for this project was the uptime of the server since we will acquire our twitter data not periodically but constantly 24/7.
+
+Based on those requirements we chose a free tier AWS EC2 instance for the following reasons
+o	We already had an account and their free tier fulfills our basic requirements and promises extremely high reliability
+o	A basic understanding of the AWS Ecosystem could be a valuable skill considering the importance AWS today has in all kinds of disciplines.
+o	AWS comes with many added features which are on the one hand intimidating and difficult to master but on the other hand also can be highly useful. For example, we used the extensive monitoring capabilities of AWS to check the CPU usage of our system and similar stats from the browser without the need to connect to the instance.
+
+The steps that were necessary for the setup of our EC2 instance were the following:
+
+Creating an account (credit card required but all we use is free tier)
+Launch of the free tier ec2 instance with the following operating system:
+o	LINUX […]
+
+Connect to the server
+ 
+Launch Linux instance 
+Create pem key file
+Change ownership of pem key file
+chmod 0400 Server1.pem
+ 
+Connect through ssh
+ 
+Using the instance`s root name and public dns
+ 
+Replace user/ server
+ssh -i Server1.pem <user>@<server dns>
+ 
+Update everything
+```Sudo yum update all```
+ 
+ 
+install python 3.6 
+sudo yum install python36
+
+
+
 
 ### Launch instance and connect to instance
 
