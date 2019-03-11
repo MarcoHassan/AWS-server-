@@ -1,21 +1,22 @@
 # AWS-server
+ 
+**Marco Hassan - marco.hassan30@gmail.com**
 
-**Authors: Marco Hassan, Alexander Steeb**
+**Alexander Steeb - alexander.steeb@gmx.de**
 
-**Contact: marco.hassan30@gmail.com, alexander.steeb@gmx.de**
+________________________
+
+**Short description:**
 
 This repository contains one of the three projects for the Master's class *Advanced Data Analysis and Numerical Methods* at the University of St. Gallen.
 
 The aim was to set up a ```server```, set up a ```MySQL database```, import some data leveraging an ```API``` and finally to run a ```cron job```  periodically on the server to automate some process.
 
-This file is intended as the documentation to the following Github:
-
-[Github - AWS-Server](https://github.com/MarcoHassan/AWS-server-)
-
-
-For the project we decided to use the following tools:
+This file is intended as the documentation to the following **[Github: AWS-Server](https://github.com/MarcoHassan/AWS-server-)**
 
 ________________________
+**For the project we decided to use the following tools:**
+
 **Server:** AWS EC2 sever.
 
 **Data Collection:** Collecting tweets matching user specified keywords continuously and in realtime using 
@@ -30,7 +31,7 @@ _________________________
 Data is the most valuable resource of the 21st century. 
 With a relatively small investment and some programming skills one can gain insights 
 that would otherwise not be freely accessible. 
-A lot of data - while in principle free - is only available briefly. 
+A lot of data - while in principle free - is often only available for a short period and mostly not in a convenient format. 
 
 A server that runs 24/7 with a program that collects such data in a user specified format 
 and at a regular interval can mitigate these problems.
@@ -46,7 +47,7 @@ The structure of this documentation is as follows:
 3. Twitter API Connection, Data Collection, and Database Update
 4. Plotting the acquired data
 
-## 1. Set-up 
+## 1. Server setup 
  
 **First, we considered multiple different offerings for a server to host our project.**
 
@@ -80,30 +81,57 @@ We will only briefly explain the EC2 Setup since there are many great tutorial a
 3. **Next select the instance type**. In this case we choose *t2.micro* which is the typ included in the free tier.
    If your program has higher software requirements you could simply select a stronger instance type which fits your project.
 
-4. **Generate/ select key pair** to access the instance.  
+4. **Generate/ select key pair** to access the instance and properly store it on your local machine. This can include the need to change the privileges.
+    ```
+    chmod 0400 <path to .pem file>
+    ``` 
 
-Connect to the server
+5. **Connect to your server** using ssh. Therefore you need the full path to the unique .pem file, the user name and the server ip. 
+   The last two can be found on the AWS-EC2 management console. 
+    ```
+    ssh -i <path to .pem file> <user>@<server-ip>
+    ```
+6. **Update everything** simply using the following command. This is always highly important and therefore best done first.
+    ```
+    sudo yum update all
+    ```
+7. **Install python 3.6** if not already installed.
+    ```
+    sudo yum install python36 -y
+    ```
+    And verify where it is located.
+    ```
+    which python
+    ```
  
-Launch Linux instance 
-Create pem key file
-Change ownership of pem key file
-chmod 0400 Server1.pem
- 
-Connect through ssh
- 
-Using the instance`s root name and public dns
- 
-Replace user/ server
-ssh -i Server1.pem <user>@<server dns>
- 
-Update everything
-```Sudo yum update all```
- 
- 
-install python 3.6 
-sudo yum install python36
-
-
+8. **Create virtual environment** for easy package handling. 
+   The tool virtualenv is highly useful when working on different python projects.
+   It allows one to create an isolated python environments for each projects which solves many of the issues related to package management.
+   Documentation for virtualenv can be found [here](https://virtualenv.pypa.io/en/stable/)
+    
+   First we install virtualenv.
+   ```
+   pip3 install virtualenv
+   ``` 
+   
+   Next we create a new virtualenv as follows.
+   ```
+   cd ~ 
+   mkdir venv
+   cd venv
+   virtualenv -p /usr/bin/python3.6 python36   
+   ```
+   The *-p flag* in the last line lets you specify which python version you want to use. We use Python 3.6.
+   
+   Now we can use the virtualenv. This command activates the virtualenv.
+   ```
+   source <path to virtualenv>/venv/python36/bin/activate
+   ```
+   Use `which python` to verify that it has worked. Once activated the `python` and `pip` commands reference to the earlier specified python version.
+   The virtualenv can be exited with the command `deactivate`.
+     
+#### Additional tools we used
+       
 **Cyberduck**
 
 Additionally for convenience reasons we used the free SFTP client **[Cyberduck](https://cyberduck.io)**
@@ -111,50 +139,17 @@ to quickly transfer files between our local machines and our server.
 
 **Git/Github**
 
-To further facilitate collaboration we used Git and Github. As mentioned above the whole project can also be found there.
-
-
-### Launch instance and connect to instance
-
-The first step is to set-up a server. We decided to use the free-tier AWS server. 
-
-### Install / Update
-
-### Create virtualenv
-
-### Github setup
-
-install python 3.6 
-sudo yum install python36
-
-Create virtual environment for easy package handling and because of:
-"Also realize that some functions of the Amazon Linux AMI might rely on python pointing to version 2.7.x, so you’d probably be better off exploring virtualenv instead, but I digress."
-(http://outofmyhead.olssonandjones.com/2018/02/24/how-to-install-python-3-x-on-amazon-ec2-instance/)
-
-
-cd ~ 
-mkdir venv
-cd venv
-virtualenv -p /usr/bin/python3.6 python36
-source /home/ec2-user/venv/python36/bin/activate
-source /home/shared/venv/python36/bin/activate
-deactivate
-
-Source: https://aws.amazon.com/premiumsupport/knowledge-center/python-boto3-virtualenv/
-
-
-	- Due to the virtual environment both the commands python and pip link to the respective versions we use. So if you don't use a virtualenvironment you may need to use python3 and pip3 instead.
-	- A simple pip install 
-### Github setup (Link to tutorial)
+To further facilitate collaboration we used Git and Github. 
+As mentioned above the whole project can also be found **[here](https://github.com/MarcoHassan/AWS-server-)**.
 
 
 
-## 2. Database Set Up
+## 2. Database setup
 
 Once the server was properly set up we first downloaded the MySQL software on the server running the following command.
 
 ```
-sudo yum install Mysql-server
+sudo yum install mysql-server
 ```
 
 After the successful installation on the server we specified the automatic start up of MySQL after a reboot and started the service:
@@ -177,7 +172,6 @@ mysqladmin -u root -p create tweetsDB
 
 And finally we created a data table that matches the structure of our downloaded tweets.
 
-**#favorites???**
 
 ```
 CREATE TABLE tweets(
@@ -186,16 +180,12 @@ CREATE TABLE tweets(
 
     date TIMESTAMP,
 
-    text  VARCHAR(300),
-
-    favorite_count INT,
+    text  VARCHAR(300)
 
 
     INDEX user (user), 
 
-    INDEX date (date),
-
-    INDEX favorite_count (favorite_count)
+    INDEX date (date)
 
 );
 ```
@@ -228,9 +218,9 @@ With such set of unique API keys it will be possible to leverage on the Twitter 
 
 #### General Information
 
-The python script relies will intereact with two different files and one database.
+The python script will interact with two different files and one database.
 
-In this sense when running the scipt you will be asked to specify the path to a .json file where your twitter API credentials are properly stored.
+In this sense when running the script you will be asked to specify the path to a .json file where your twitter API credentials are properly stored.
 
 Moreover you will be asked to specify the naming of two files that exist in your shell working directory or that will be created:
 
@@ -251,28 +241,25 @@ The required packages for the script are documented in the **requirements.txt** 
 If you are using virtual environments you can simply create a new environment and run the following commands to install exactly the packages we use:
 
 1. Create a new virtual environment
-```
-mkdir venv-server
-cd venv-server
-virtualenv -p /usr/bin/python3.6 python36
-```
-It could be that your python version is installed in a different location. In this case you would have to adjust the python path.
-
+   ```
+   virtualenv -p /usr/bin/python3.6 python36
+   ```
+   It could be that your python version is installed in a different location. In this case you would have to adjust the python path.
 
 2. Activate the local environment
-```
-source ./venv/python36/bin/activate
-```
+   ```
+   source ./venv/python36/bin/activate
+   ```
 
 3. Install exactly the packages specified in the requirements.txt file 
-```
-pip install json
-pip install twython
-pip install mysql.connector
-pip install matplotlib.pyplot 
-pip install pandas
-```
-
+   ```
+   pip install -r requirements.txt
+   ```
+   The requirements file was created with the following command which saves the exact setup of an active virtualenv into a text file.
+   ```
+   pip freeze > requirements.txt
+   ```
+   
 Alternatively you can, of course, also install the required packages specified in requirements.txt without virtualenv by simply using pip/pip3.  
 
 
