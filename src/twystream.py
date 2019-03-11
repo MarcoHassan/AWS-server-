@@ -77,7 +77,7 @@ path_credentials = credentials
 csv = input(
 	"Please specify the document name of your csv file - w/o file format - here: ")
 path_data = "./data/" + csv + ".csv"
-outfile = open(csv, "a")
+outfile = open(path_data, "a")
 outfile.write("")
 outfile.close()
 
@@ -126,7 +126,7 @@ class MyStreamer(TwythonStreamer):
 			host='localhost',
 			database='tweetsDB',
 			user='root',
-			password='ENTER YOUR PASSWORD')
+			password='1234')
 		if conn.is_connected():
 			# report successfull connection in the log file.
 			logger.info('Connected to MySQL database')
@@ -152,7 +152,6 @@ class MyStreamer(TwythonStreamer):
 	def save_to_csv(self, tweet):
 		with open(path_data, 'a') as file:
 			# 'a' for appending and not overwriting.
-
 			writer = csv.writer(file)
 			writer.writerow(list(tweet.values()))  # write the tweet values
 			# to be saved. You can specify the entries you want to save
