@@ -53,11 +53,11 @@ The structure of this documentation is as follows:
 
 The requirements were rather simple. 
 + At least on decent CPU core 
-+ At least 1gb of ram/storage 
++ At least 1GB of ram/storage 
 + A good internet connection 
 + High availability
 
-Especially the last point was important for this project since we will acquire our twitter data 
+Especially the last point was important for this project since we will collect the twitter data 
 not periodically but constantly 24/7.
 
 Based on those requirements we chose a free tier AWS EC2 instance for the following reasons:
@@ -68,9 +68,9 @@ Based on those requirements we chose a free tier AWS EC2 instance for the follow
   For example, we used the extensive monitoring capabilities of AWS to check the CPU usage of our system and similar stats from the browser without the need to connect to the instance.
 
 
-**The steps that were necessary for the setup of the EC2 instance were the following:**
+**Next, we set up our instance in the following way:**
 
-We will only briefly explain the EC2 Setup since there are many great tutorial already online like for example 
+We will only briefly explain the EC2 setup since there are many great tutorial already online like for example 
 [here](https://aws.amazon.com/getting-started/tutorials/launch-a-virtual-machine/?trk=gs_card).
 
 1. **Create an AWS account** (credit card required but nothing will be charged since we only use the free tier EC2 instance)
@@ -79,18 +79,20 @@ We will only briefly explain the EC2 Setup since there are many great tutorial a
    This image already includes a variety of useful programs.
 
 3. **Next select the instance type**. In this case we choose *t2.micro* which is the typ included in the free tier.
-   If your program has higher software requirements you could simply select a stronger instance type which fits your project.
+   If your program has higher hardware requirements you could simply select a stronger instance that fits your projects needs.
 
-4. **Generate/ select key pair** to access the instance and properly store it on your local machine. This can include the need to change the privileges.
-    ```
-    chmod 0400 <path to .pem file>
-    ``` 
+4. **Generate / select key pair** to access the instance and properly store it on your local machine. 
+   This can include the need to change the privileges of the private key.
+   ```
+   chmod 0400 <path to .pem file>
+   ``` 
 
-5. **Connect to your server** using ssh. Therefore you need the full path to the unique .pem file, the user name and the server ip. 
+5. **Connect to your server** using ssh. You will need the full path to the unique .pem file, the user name, and the server ip. 
    The last two can be found on the AWS-EC2 management console. 
-    ```
-    ssh -i <path to .pem file> <user>@<server-ip>
-    ```
+   ```
+   ssh -i <path to .pem file> <user>@<server-ip>
+   ```
+
 6. **Update everything** simply using the following command. This is always highly important and therefore best done first.
     ```
     sudo yum update all
@@ -105,7 +107,7 @@ We will only briefly explain the EC2 Setup since there are many great tutorial a
     ```
  
 8. **Create virtual environment** for easy package handling. 
-   The tool virtualenv is highly useful when working on different python projects.
+   The tool **virtualenv** is highly useful when working on different python projects.
    It allows one to create an isolated python environments for each projects which solves many of the issues related to package management.
    Documentation for virtualenv can be found [here](https://virtualenv.pypa.io/en/stable/)
     
@@ -134,14 +136,13 @@ We will only briefly explain the EC2 Setup since there are many great tutorial a
        
 **Cyberduck**
 
-Additionally for convenience reasons we used the free SFTP client **[Cyberduck](https://cyberduck.io)**
+For convenience reasons we used the free SFTP client **[Cyberduck](https://cyberduck.io)**
 to quickly transfer files between our local machines and our server.
 
 **Git/Github**
 
 To further facilitate collaboration we used Git and Github. 
 As mentioned above the whole project can also be found **[here](https://github.com/MarcoHassan/AWS-server-)**.
-
 
 
 ## 2. Database setup
@@ -160,17 +161,17 @@ sudo chkconfig mysqld on
 sudo service mysqld start
 ```
 
-Finally we specified the user administrator for the software. Of course you can change the user name and password.
+Finally we specified the user administrator for the software. Of course, you can change the user name and password.
 ```
 mysqladmin -u root password <enter your password>
 ```
 
-Given the successful general set up of the software we proceeded by creating a database for our tweet dataset called tweetsDB.
+Given the successful general set up of the software we proceeded by creating a database for our tweets dataset called tweetsDB.
 ```
 mysqladmin -u root -p create tweetsDB
 ```
 
-And finally we created a data table that matches the structure of our downloaded tweets.
+And finally, we created a data table that matches the structure of our downloaded tweets.
 
 
 ```
@@ -199,8 +200,9 @@ In this section we are going to explain the set up of a python script that autom
 
 Before delving on the details notice that our code heavily relies on the twython package available on github. 
 
-Moreover pieces of code are referenced from:
 _________________________________________________
+
+Moreover pieces of code are referenced from:
 
 **Source 1:** [Accessing Twitter API with Python](https://stackabuse.com/accessing-the-twitter-api-with-python/) 
 
@@ -212,9 +214,11 @@ ________________________________________________
 
 In order to avoid of the misuse of tweets information, Twitter will require people willing to extract their tweets data through their APIs to do that through the use of ```API keys```. This will allow Twitter to keep track of a sepecific user queries and to get back to the user in case of misconduct.
 
-In order to obtain such pair of keys it will be necessary to register on [Twitter Apps](https://twitter.com/login?redirect_after_login=https%3A%2F%2Fdeveloper.twitter.com%2Fapps) and generate a new couple of keys.
+In order to obtain such a pair of keys it will be necessary to register on [Twitter Apps](https://twitter.com/login?redirect_after_login=https%3A%2F%2Fdeveloper.twitter.com%2Fapps) and generate a new couple of keys.
 
-With such set of unique API keys it will be possible to leverage on the Twitter API. For portability we decided in our programs to save the API keys in a  ```json``` file and to import the keys in our python script by reading such file. This is the common used practice in order to deal with sensible information and to mask such private information when operating in shared projects.
+With such a set of unique API keys it will be possible to leverage on the Twitter API. For portability we decided in our programs to save the API keys in a  ```json``` file and to import the keys in our python script by reading such file. This is the common used practice in order to deal with sensible information and to mask such private information when operating in shared projects.
+
+An example of the `json` file layout is included.
 
 #### General Information
 
@@ -224,9 +228,10 @@ In this sense when running the script you will be asked to specify the path to a
 
 Moreover you will be asked to specify the naming of two files that exist in your shell working directory or that will be created:
 
-(i) A csv file where the imported tweets will be saved in addition to the MySQL file.
+1. A **csv file** where the imported tweets will be saved in addition to the MySQL file. 
+(Just to be save, since storage was not a limitation for our application)
  
-(ii) A log file where the user can find documentation on the smoothly operation of the script.
+2. A **log file** where the user can find documentation on the smooth operation of the script and for example the number of downloaded tweets.
 
 Both will be saved under the working directory of your shell at the moment of running the python script.
 
