@@ -71,7 +71,7 @@ import pytz
 log_file = input(
     "Please specify the log file name of desire w/o file format here: ")
 path_log = "./" + log_file + ".log"
-outfile = open(path_log, "w")
+outfile = open(path_log, "a")
 outfile.write("")
 outfile.close()
 
@@ -84,7 +84,7 @@ path_credentials = credentials
 csv = input(
     "Please specify the document name of your csv file - w/o file format - here: ")
 path_data = "./data/" + csv + ".csv"
-outfile = open(csv, "w")
+outfile = open(csv, "a")
 outfile.write("")
 outfile.close()
 
