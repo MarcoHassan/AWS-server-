@@ -291,7 +291,7 @@ This ensures that after a disconnect for whatever reason the program automatical
 You can interrupt the execution of the program with the keyboard interrupt command. It is moreover advisable to run the program in the background by running the following code. 
 
 ```
-nohup python src/twystream.py &
+nohup python -u <path>/twystream.py &
 ```
 
 Moreover due to the set up of a log file of reference in the python script you will be able to follow and check the operations of the program by inspecting the **.log** file generated at the beginning.
