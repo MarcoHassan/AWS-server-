@@ -24,11 +24,6 @@
 # - to track the script execution - and a csv file - where the downloaded
 # tweets will be saved -. Moreover it will be necessary to set up a
 # mysql server.
-#
-# Notice that the naming of the csv, log and database should match the one
-# used in this script. An adjustment below will be necessary if different
-# naming will be used. In addition if you search tweets in a different
-# language than english you should specify the condition at line 178.
 
 #######################
 # Necessary libraries #
