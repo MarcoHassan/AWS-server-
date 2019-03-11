@@ -288,13 +288,13 @@ The script will start running at this point. Notice that the script will run inf
 
 This ensures that after a disconnect for whatever reason the program automatically tries to reconnect immediately.
 
-You can interrupt the execution of the program with the keyboard interrupt command. It is moreover advisable to run the program in the background by running the following code
+You can interrupt the execution of the program with the keyboard interrupt command. It is moreover advisable to run the program in the background by running the following code. 
 
 ```
- nohup ....
+nohup python src/twystream.py &
 ```
 
-Moreover due to the set up of a log file of reference in the python script you will be able to follow and check the operations of the program by inspecting the **twitter.log** file generated at the beginning.
+Moreover due to the set up of a log file of reference in the python script you will be able to follow and check the operations of the program by inspecting the **.log** file generated at the beginning.
 
 **Congrats!** You have at this stage a fully functional program automatically downloading and importing the tweets of your specific interest. You can find them both in your database as well as in the csv file.
 
@@ -400,7 +400,6 @@ echo "Cron running at: $(date) and generating the updated tweets.png plot" >> /h
 
 #### Restore the database through the backup file
 
-#TODO 
 Given the structure of the mysqldump command that will save all of the syntax of the database it will be sufficient to run the following command 
 ```
 mysql -u <user> -p < <path>/backup.sql

@@ -74,9 +74,9 @@ credentials = input(
 path_credentials = credentials
 
 # Csv file creation in the local directory.
-csv = input(
+csv_s = input(
 	"Please specify the document name of your csv file - w/o file format - here: ")
-path_data = "./data/" + csv + ".csv"
+path_data = "./data/" + csv_s + ".csv"
 outfile = open(path_data, "a")
 outfile.write("")
 outfile.close()
