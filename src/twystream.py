@@ -59,6 +59,8 @@ except getopt.GetoptError:
 
 for opt, arg in opts:
 	if opt == '-h':
+		print(
+			'test.py -d <csv-path> -l <log-path> -c <credentials-path> -k <keywords> (all without file type extensions')
 		sys.exit()
 	elif opt in ("-d", "--data_file"):
 		data_path = arg

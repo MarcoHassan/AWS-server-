@@ -95,7 +95,7 @@ We will only briefly explain the EC2 setup since there are many great tutorial a
 
 6. **Update everything** simply using the following command. This is always highly important and therefore best done first.
     ```
-    sudo yum update all
+    sudo yum update
     ```
 7. **Install python 3.6** if not already installed.
     ```
@@ -113,7 +113,7 @@ We will only briefly explain the EC2 setup since there are many great tutorial a
     
    First we install virtualenv.
    ```
-   pip3 install virtualenv
+   pip install virtualenv
    ``` 
    
    Next we create a new virtualenv as follows.
@@ -175,19 +175,22 @@ And finally, we created a data table that matches the structure of our downloade
 
 
 ```
-CREATE TABLE tweets(
+CREATE TABLE tradewar(
 
-    user VARCHAR(60),
+    user VARCHAR(60) NOT NULL,
 
-    date TIMESTAMP,
+    date TIMESTAMP NOT NULL,
 
-    text  VARCHAR(300)
+    text  VARCHAR(300) NOT NULL,
 
+    latitude FLOAT,
+    longitude FLOAT,
 
-    INDEX user (user), 
+    hashtags VARCHAR(300),
+
+    INDEX user (user),
 
     INDEX date (date)
-
 );
 ```
  
@@ -281,17 +284,21 @@ Do not hesitate to contact us in case of doubts.
 Once you have imported the python script, created the supporting files and database, and updated the SQL and Twitter API credentials you will be able to run the script with the following command:
 
 ```
-python <path>/twystream.py
+mkdir output
+python src/twystream.py -d output/data_test -l output/log_test -c twitter_credentials -k Trump 
 ```
 
 The script will start running at this point. Notice that the script will run infinitely as when errors occurs the program will simply reactivate after 5 sec. 
 
 This ensures that after a disconnect for whatever reason the program automatically tries to reconnect immediately.
 
-You can interrupt the execution of the program with the keyboard interrupt command. It is moreover advisable to run the program in the background by running the following code. 
+You can interrupt the execution of the program with the keyboard interrupt command. 
+
+It is moreover advisable to run the program in the background by running the following code. This will also detach the command 
+from the active shall so that it does not stop if the shell connection is lost.
 
 ```
-nohup python -u <path>/twystream.py &
+nohup python -u  src/twystream.py -d output/data_test -l output/log_test -c twitter_credentials -k Trump &
 ```
 
 Moreover due to the set up of a log file of reference in the python script you will be able to follow and check the operations of the program by inspecting the **.log** file generated at the beginning.
