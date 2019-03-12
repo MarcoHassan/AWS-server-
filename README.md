@@ -1,5 +1,7 @@
 # AWS-server
  
+**March 2019**
+ 
 **Marco Hassan - marco.hassan30@gmail.com**
 
 **Alexander Steeb - alexander.steeb@gmx.de**
@@ -163,7 +165,7 @@ sudo service mysqld start
 
 Finally we specified the user administrator for the software. Of course, you can change the user name and password.
 ```
-mysqladmin -u root password <enter your password>
+mysqladmin -u root
 ```
 
 Given the successful general set up of the software we proceeded by creating a database for our tweets dataset called tweetsDB.
@@ -175,7 +177,7 @@ And finally, we created a data table that matches the structure of our downloade
 
 
 ```
-CREATE TABLE tradewar(
+CREATE TABLE tweets(
 
     user VARCHAR(60) NOT NULL,
 
@@ -285,7 +287,7 @@ Once you have imported the python script, created the supporting files and datab
 
 ```
 mkdir output
-python src/twystream.py -d output/data_test -l output/log_test -c twitter_credentials -k Trump 
+python src/twystream.py -d output/data_test -l output/log_test -c twitter_credentials -k 'Trump Kim' 
 ```
 
 The script will start running at this point. Notice that the script will run infinitely as when errors occurs the program will simply reactivate after 5 sec. 
@@ -298,7 +300,7 @@ It is moreover advisable to run the program in the background by running the fol
 from the active shall so that it does not stop if the shell connection is lost.
 
 ```
-nohup python -u  src/twystream.py -d output/data_test -l output/log_test -c twitter_credentials -k Trump &
+nohup python -u  src/twystream.py -d output/data_test -l output/log_test -c twitter_credentials -k 'Trump Kim' &
 ```
 
 Moreover due to the set up of a log file of reference in the python script you will be able to follow and check the operations of the program by inspecting the **.log** file generated at the beginning.

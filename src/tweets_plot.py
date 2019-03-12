@@ -8,10 +8,19 @@
 # marco.hassan30@gmail.com
 # Started 2019-02-27
 
+##########################
+# Arguments & Setup 	 #
+##########################
 
+import json
 import pandas as pd
 import mysql.connector  # to connect with the SQL server
 import matplotlib.pyplot as plt
+
+# API key credentials file
+cred_path = "twitter_credentials.json"
+with open(cred_path, "r") as file:
+	creds = json.load(file)
 
 
 ##########################
@@ -21,10 +30,10 @@ import matplotlib.pyplot as plt
 def tweetPlot():
 
 	conn = mysql.connector.connect(
-		host='localhost',
-		database='tweetsDB',
-		user='root',
-		password='1234'
+		host=creds['host'],
+		database=creds['database'],
+		user=creds['user'],
+		password=creds['password']
 	)
 
 	cur = conn.cursor()
@@ -63,4 +72,4 @@ fig, ax = plt.subplots(figsize=(15, 7))
 data.plot(ax=ax, kind='line')
 
 plt.title('Tweets per 5 minutes containing both Trump and Kim')
-plt.savefig('/home/ec2-user/tweets.png')
+plt.savefig('./plots/tweets.png')

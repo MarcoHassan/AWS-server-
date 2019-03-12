@@ -25,12 +25,21 @@ use tweetsDB
 # Create table
 CREATE TABLE tweets(
 
-date TIMESTAMP,
-user VARCHAR(300),
-text  VARCHAR(300),
+    user VARCHAR(60) NOT NULL,
 
-INDEX user (user),
-INDEX date (date)
+    date TIMESTAMP NOT NULL,
+
+    text  VARCHAR(300) NOT NULL,
+
+    latitude FLOAT,
+    longitude FLOAT,
+
+    hashtags VARCHAR(300),
+
+    INDEX user (user),
+
+    INDEX date (date)
+
 );
 
 # Delete all rows of a table

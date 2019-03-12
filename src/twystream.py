@@ -46,7 +46,7 @@ from email.utils import parsedate_tz, mktime_tz
 import pytz
 
 ##########################
-# Command line arguments #
+# Arguments & Setup 	 #
 ##########################
 
 try:
