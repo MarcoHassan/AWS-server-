@@ -32,10 +32,8 @@
 from twython import TwythonStreamer  # to connect to twitter server via the provided API keys
 import json  # to interact with the json file where the API keys are saved
 import csv  # to write a csv containing the tweets
-import sys  # for entering the keyword of interest for the search
-
-# to set up a log file where the operations of the script are tracked.
-import logging
+import sys, getopt  # for entering the keyword of interest for the search
+import logging # to set up a log file where the operations of the script are tracked.
 
 # SQL
 import mysql.connector  # to connect with the SQL server
@@ -48,41 +46,65 @@ from email.utils import parsedate_tz, mktime_tz
 import pytz
 
 ##########################
+# Command line arguments #
+##########################
 
+try:
+	opts, args = getopt.getopt(sys.argv[1:], "hd:l:c:k:",
+							   ["help=", "data_file=", "log_file=", "cred_file=", "keyword="])
 
-##################
-# General set up #
-##################
+except getopt.GetoptError:
+	print('test.py -d <csv-path> -l <log-path> -c <credentials-path> -k <keywords> (all without file type extensions')
+	sys.exit(2)
 
-# Log file creation in the local directory
+for opt, arg in opts:
+	if opt == '-h':
+		sys.exit()
+	elif opt in ("-d", "--data_file"):
+		data_path = arg
+	elif opt in ("-l", "--log_file"):
+		log_path = arg
+	elif opt in ("-c", "--cred_file"):
+		cred_path = arg
+	elif opt in ("-k", "--keyword"):
+		keyword = arg
 
-log_file = input(
-	"Please specify the log file name of desire w/o file format here: ")
-path_log = "./" + log_file + ".log"
-outfile = open(path_log, "a")
+print("")
+print("Query started")
+print(90 * "-")
+print('Data file is 			', data_path)
+print('Log file is 			', log_path)
+print('Credentials file is 		', cred_path)
+print('Search keyword is 		', keyword)
+print(90 * "-")
+print("")
+
+log_path = "./" + log_path + ".log"
+outfile = open(log_path, "w")
 outfile.write("")
 outfile.close()
 
 # API key credentials file
-credentials = input(
-	"Please specify the path to the json file displaying your API credentials: ")
-path_credentials = credentials
+cred_path = cred_path + ".json"
+with open(cred_path, "r") as file:
+	creds = json.load(file)
+
 
 # Csv file creation in the local directory.
-csv_s = input(
-	"Please specify the document name of your csv file - w/o file format - here: ")
-path_data = "./data/" + csv_s + ".csv"
-outfile = open(path_data, "a")
+data_path = "./" + data_path + ".csv"
+outfile = open(data_path, "w")
 outfile.write("")
 outfile.close()
 
-# Setup logger
+##########################
+# Setup logger			 #
+##########################
 
 # Logging inspired by this example:
 # https://docs.python.org/2.7/howto/logging.html#logging-advanced-tutorial
 
 logger = logging.getLogger('twitter')  # specify the name of the log file.
-hdlr = logging.FileHandler(path_log)  # specify the path to the log file.
+hdlr = logging.FileHandler(log_path)  # specify the path to the log file.
 
 formatter = logging.Formatter('%(asctime)s (%(levelname)s) - %(message)s')
 # the formatter specify how the messages should be displayed in the log
@@ -92,23 +114,14 @@ hdlr.setFormatter(formatter)  # save formatter option
 logger.addHandler(hdlr)  # add to the logger file the formatted options.
 logger.setLevel(logging.INFO)  # Level of priority messages you want to display. Here: info level and above.
 
-# Saves the search criteria for the tweets you specified in the shell.
-keywords = sys.argv[1]
 
-####################
-
-########
-# CODE #
-########
-
-# Import your API credentials
-with open(path_credentials, "r") as file:
-	creds = json.load(file)
+##########################
+# Code					 #
+##########################
 
 
 # Create a class that inherits TwythonStreamer functionality and
-# passes all the arguments of interest to the streaming functionality of
-# twython.
+# passes all the arguments of interest to the streaming functionality of twython.
 
 class MyStreamer(TwythonStreamer):
 	counter = 0
@@ -118,15 +131,14 @@ class MyStreamer(TwythonStreamer):
 	# try to connect to the database
 	try:
 		conn = mysql.connector.connect(
-			host='localhost',
-			database='tweetsDB',
-			user='root',
-			password='1234')
+			host=creds['host'],
+			database=creds['database'],
+			user=creds['user'],
+			password=creds['password'])
 		if conn.is_connected():
-			# report successfull connection in the log file.
+			# report successful connection in the log file.
 			logger.info('Connected to MySQL database')
-			my_str = "Stream successfully established for Keywords: {}".format(
-				keywords)
+			my_str = "Stream successfully established for Keywords: {}".format(keyword)
 			# report successful connection for the specified keyword
 			logger.info(my_str)
 
@@ -145,22 +157,30 @@ class MyStreamer(TwythonStreamer):
 
 	# Save each tweet to csv file
 	def save_to_csv(self, tweet):
-		with open(path_data, 'a') as file:
+		with open(data_path, 'a') as file:
 			# 'a' for appending and not overwriting.
 			writer = csv.writer(file)
 			writer.writerow(list(tweet.values()))  # write the tweet values
-			# to be saved. You can specify the entries you want to save
-			# at line 157. For this porgram we decided to save the date
-			# user name and the text of the tweet.
+
+	# to be saved. You can specify the entries you want to save
+	# at line 157. For this porgram we decided to save the date
+	# user name and the text of the tweet.
 
 	# Insert each Tweet into MySql
 	def save_to_sql(self, tweet):
 		try:
-			self.conn.cursor().execute(
-				"""INSERT into tweets(date,user,text) values(%s,%s,%s)""",
-				(list(tweet.values())))  # use s-strings to insert the
-			# tweets into the server by entering the list elements one
-			# by one.
+			sql_string = """
+				INSERT into {}(
+					date,
+					user,
+					text,
+					latitude,
+					longitude,
+					hashtags) 
+				values(%s,%s,%s,%s,%s,%s)
+				""".format(creds['table'])
+			self.conn.cursor().execute(sql_string, (list(tweet.values())))
+			# use s-strings to insert the tweets into the server by entering the list elements one by one.
 			self.conn.commit()  # commit the execution to the database.
 			print('Inserted {} tweets'.format(self.counter))
 
@@ -170,29 +190,25 @@ class MyStreamer(TwythonStreamer):
 			# gives the text lost in the log file
 			logging.error('Insertion failed:' + str(list(tweet.values())[2]))
 			self.conn.rollback()  # rollback all the changes done for the
-			# the problematic tweet.
+
+	# the problematic tweet.
 
 	# Decide what data to import from the tweets
 	def process_tweet(self, tweet):
 		d = {}
-
 		timestamp = mktime_tz(parsedate_tz(tweet['created_at']))
 		dt = datetime.datetime.fromtimestamp(
 			timestamp, pytz.timezone('US/Eastern'))
 		d['date'] = dt.strftime('%Y-%m-%d %H:%M:%S')
-
 		d['user'] = tweet['user']['screen_name'].encode('utf-8')
 		d['text'] = tweet['text'].encode('utf-8')
 
-		return d
+		d['latitude'] = tweet['coordinates']
+		d['longitude'] = tweet['coordinates']
 
-		# Notice; for above possible interesting options to be saved are:
-		# d['user_loc'] = tweet['user']['location']
-		# d['geo_loc'] = tweet['coordinates']
-		# d['favorite_coun'] = tweet['favorite_count']
-		# d['retweet_coun'] = tweet['retweet_count']
-		# d['hashtags'] = [hashtag['text'].encode('utf-8')
-		#                  for hashtag in tweet['entities']['hashtags']]
+		d['hashtags'] = str(tweet['entities']['hashtags']).encode('utf-8')
+
+		return d
 
 	# Specify the action in case no error occured.
 	def on_success(self, data):
@@ -208,11 +224,9 @@ class MyStreamer(TwythonStreamer):
 		logger.info(my_str)
 		self.counter += 1
 
-
 # Instantiate streaming class
 stream = MyStreamer(creds['CONSUMER_KEY'], creds['CONSUMER_SECRET'],
 					creds['ACCESS_TOKEN'], creds['ACCESS_SECRET'])
-
 
 # Calls the twythonstreamer filter member function that will
 # call the mystreamer on_success and on_error member function of the
@@ -221,10 +235,9 @@ stream = MyStreamer(creds['CONSUMER_KEY'], creds['CONSUMER_SECRET'],
 # Moreover the function below will reactivate the tweets downloaded after
 # 5 sec. after an error occurred.
 
-
 def cont_streamer():
 	try:
-		stream.statuses.filter(track=keywords, language='en')
+		stream.statuses.filter(track=keyword, language='en')
 	except Exception as e:
 		print(e)
 		print('Failed; wait 5 seconds')
