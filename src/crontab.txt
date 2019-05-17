@@ -1,0 +1,46 @@
+##################
+# Crontab Set Up #
+##################
+
+# Code for the Server Project
+# alexander.steeb@student.unisg.ch &
+# marco.hassan30@gmail.com
+# Started 2019-02-27
+
+
+SHELL=/bin/bash
+# MAILTO=marco.hassan30@gmail.com # Enter a mail on which to return the cron executions
+
+
+## Execute the python script to connect to mysql and run a backup each day at 00:01.
+
+##########
+# Format #
+##########
+
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name  command to be executed
+
+#########
+
+################## 
+# Cron Execution #
+##################
+
+Run a backup of the mysql files
+ 
+01 0 1 * * echo "Cron in running at: $(date)" >> /home/ec2-user/prova.log && /usr/bin/mysqldump -u root -p'ENTER YOUR PASSWORD' tweetsDB > /home/ec2-user/backup.sql && echo "Cron is running smoothly and saved a backup of the tweewtsDB database at: $(date)" >> /home/ec2-user/prova.log || echo "At $(date) back-up did not complete asan error occured." >> /home/ec2-user/prova.log
+
+
+59 23 * * * echo "Cron running at: $(date) and generating the updatedtweets.png" >> /home/ec2-user/prova.log && source /home/ec2-user/venv/python36/bin/activate >> /home/ec2-user/prova.log 2>&1 && python /home/ec2-user/tweets_plot2.py && echo "Cron job terminated and successfully generated the plot" >> /home/ec2-user/prova.log || "Cron terminating without plotting. An error occured." >> /home/ec2-user/prova.log
+
+##################
+
+

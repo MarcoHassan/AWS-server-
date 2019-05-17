@@ -1,0 +1,54 @@
+# Main SQL commands used in this project
+#
+# Code for the Server Project
+# alexander.steeb@student.unisg.ch &
+# marco.hassan30@gmail.com
+# Started 2019-02-27
+
+
+# Start server after installing it
+
+mysql.server start
+mysql.server stop
+
+
+mysql -uroot
+
+# Create Database
+mysqladmin -uroot create tweetsDB
+
+#### in mysql ###
+
+# Use the DB
+use tweetsDB
+
+# Create table
+CREATE TABLE tweets(
+
+    user VARCHAR(60) NOT NULL,
+
+    date TIMESTAMP NOT NULL,
+
+    text  VARCHAR(300) NOT NULL,
+
+    latitude FLOAT,
+    longitude FLOAT,
+
+    hashtags VARCHAR(300),
+
+    INDEX user (user),
+
+    INDEX date (date)
+
+);
+
+# Delete all rows of a table
+TRUNCATE TABLE tweets
+
+# See tweets by minute/ hour
+SELECT
+  EXTRACT(HOUR from date) AS hour,
+  EXTRACT(MINUTE from date) AS minute,
+  COUNT(date) AS count
+FROM tweets
+GROUP BY hour, minute;
