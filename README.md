@@ -2,7 +2,7 @@
  
 **March 2019**
  
-**Marco Hassan - marco.hassan30@gmail.com**
+**Marco Hassan**
 
 **Alexander Steeb - alexander.steeb@gmx.de**
 
