@@ -5,7 +5,7 @@ idna==2.8
 kiwisolver==1.0.1
 matplotlib==3.0.3
 mysql-connector-python==8.0.15
-numpy==1.16.1
+numpy==1.22.0
 oauthlib==3.0.1
 pandas==0.24.1
 protobuf==3.6.1
